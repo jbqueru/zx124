@@ -50,6 +50,10 @@
 ;		movea instead of move on 680x0 when the code relies on the
 ;		flags not getting modified.
 
+	.z80
+	.dotnames
+	.reqcolon
+
 #target rom
 #code text, 0x5dc0, 0xa180
 	.org	0x5dc0
