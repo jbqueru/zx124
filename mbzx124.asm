@@ -65,7 +65,7 @@
 	.z80				; We're on a ZX Spectrum
 
 #target ram				; Create a plain binary image
-#code	text, 0x5dc0, 0xa180		; Code segment starts right after BASIC
+#code	text, 0x6000, 0x9f01		; Code segment starts right after BASIC
 #data	bss, 0xfc00, $fd		; BSS starts just before the interrupt block
 
 
