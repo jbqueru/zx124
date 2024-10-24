@@ -65,26 +65,59 @@
 	.z80				; We're on a ZX Spectrum
 
 #target ram				; Create a plain binary image
-#code	slowtext, $5e00, $2200		; Slow code segment starts right after BASIC
-#code	text, $8000, $7f01		; Fast code segment uses non-contended RAM
 #data	slowbss, $5b00, $300		; Slow BSS overwrites reserved area
-#data	bss, $fc00, $fd			; Fast BSS is just below the interrupt block
+#code	slowtext, $5e00, $2200		; Slow code segment starts right after BASIC
+#code	text, $8000, $7d00		; Fast code segment uses non-contended RAM
+#data	bss, $fd00, $fd			; Fast BSS is just below the interrupt block
+#data	irqvecs, $fdfd, $104		; Where we store data related to IM 2 interrupt handling
 #data	stack, $ff01, $ff		; Stack rounds up the list
+
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                              Boilerplate                              ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
 
 #code	slowtext
 
-; ###########
-; ##       ##
-; ## Setup ##
-; ##       ##
-; ###########
+; ########################
+; ##                    ##
+; ## Entry point, setup ##
+; ##                    ##
+; ########################
 
 ; disable interrupts
 	di
 
+; set up stack
+	ld	sp, 0
+
 ; set up interrupt handler
 	ld	a, $fe
 	ld	i, a
+
+	ld	a, $c3
+	ld	hl, $fdfd
+	ld	(hl), a
+	inc	l
+	ld	de, irq
+	ld	(hl), e
+	inc	l
+	ld	(hl), d
+
+	ld	c, $fd
+	inc	h
+	inc	l
+	ld	b, l
+SetIrq:	ld	(hl), c
+	inc	l
+	djnz	SetIrq
+	inc	h
+	ld	(hl), c
 
 ; enable interrupts
 	im	2
@@ -141,12 +174,6 @@ irq:	push	af
 ; ## Boilerplate for interrupt handling ##
 ; ##                                    ##
 ; ########################################
-
-#code	text
-
-	.org	$fdfd
-	jp	irq
-	.ds	257, $fd
 
 #data	bss
 bgcolor:	ds	1
