@@ -65,12 +65,17 @@
 	.z80				; We're on a ZX Spectrum
 
 #target ram				; Create a plain binary image
-#data	slowbss, $5b00, $300		; Slow BSS overwrites reserved area
-#code	slowtext, $5e00, $2200		; Slow code segment starts right after BASIC
-#code	text, $8000, $7d00		; Fast code segment uses non-contended RAM
-#data	bss, $fd00, $fd			; Fast BSS is just below the interrupt block
-#data	irqvecs, $fdfd, $104		; Where we store data related to IM 2 interrupt handling
-#data	stack, $ff01, $ff		; Stack rounds up the list
+
+; Contended RAM
+#data	screen, $4000, $1b00		; 6.75 kiB of screen data
+#data	slowbss, $5b00, $300		; 0.75 kiB of slow variables, overwriting reserved area
+#code	slowtext, $5e00, $2200		; 8.5 kiB of slow code, right after BASIC
+
+; Fast RAM
+#code	text, $8000, $7c00		; 31 kiB of code in regular RAM
+#data	bss, $fC00, $1fd		; Almost 0.5 kB of variables in regular RAM
+#data	irqvecs, $fdfd, $104		; 0.25 kB and change for IM 2 interrupt handling (must be in regular RAM)
+#data	stack, $ff01, $ff		; Almost 0.25 kB of stack
 
 ; #############################################################################
 ; #############################################################################
