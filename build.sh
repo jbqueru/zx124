@@ -43,7 +43,7 @@ bin2tap out/obj/splash.bin out/obj/splash.tap -a 0x4000
 zasm --opcodes --labels --cycles mbzx124.asm -o out/obj/mbzx124.bin
 
 # Package the machine code into a tap image
-bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x6000
+bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x5e00
 
 # Put the whole tape image together, loader + binary
 cat out/obj/loader.tap out/obj/splash.tap out/obj/code.tap > out/tap/mbzx124.tap

@@ -23,7 +23,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Reserve memory for our code, starting at 24k
-10 clear 24575
+10 clear 24063
 
 # Black magic, disable channel that displays text while loading
 20 poke 23739, 111
@@ -35,4 +35,4 @@
 40 load "" code
 
 # Jump into the code
-50 randomize usr 24576
+50 randomize usr 24064
