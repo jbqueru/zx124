@@ -35,14 +35,18 @@ mkdir -p out/tap
 # Tokenize BASIC loader, autostart at line 1
 zmakebas -a 1 -n MB\'s\ ZX124 -o out/obj/loader.tap loader.bas
 
+# Prepare the loader screen
+dd if=/dev/random of=out/obj/splash.bin bs=256 count=27
+bin2tap out/obj/splash.bin out/obj/splash.tap -a 0x4000
+
 # Assemble the actual code
 zasm mbzx124.asm -o out/obj/mbzx124.bin
 
 # Package the machine code into a tap image
-bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x5da0
+bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x5dc0
 
 # Put the whole tape image together, loader + binary
-cat out/obj/loader.tap out/obj/code.tap > out/tap/mbzx124.tap
+cat out/obj/loader.tap out/obj/splash.tap out/obj/code.tap > out/tap/mbzx124.tap
 
 ####################################
 ##                                ##

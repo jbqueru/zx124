@@ -22,13 +22,18 @@
 ;
 ; SPDX-License-Identifier: AGPL-3.0-or-later
 
-        org     0x5da0
+        org     0x5dc0
 
 	LD	A, $a5
         LD      ($4000), A
         LD      ($4200), A
         LD      ($4500), A
         LD      ($4700), A
+        LD      A, 0
+        LD      ($4100), A
+        LD      ($4300), A
+        LD      ($4400), A
+        LD      ($4600), A
 	LD	A, $46
         LD      ($5800), A
 
