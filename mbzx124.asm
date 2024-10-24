@@ -50,11 +50,24 @@
 ;		movea instead of move on 680x0 when the code relies on the
 ;		flags not getting modified.
 
+#target rom
+#code text, 0x5dc0, 0xa180
 	.org	0x5dc0
 
+; ###########
+; ##       ##
+; ## Setup ##
+; ##       ##
+; ###########
+
+; disable interrupts
 	di
+
+; set up interrupt handler
 	ld	a, $fe
 	ld	i, a
+
+; enable interrupts
 	im	2
 	ei
 
@@ -72,12 +85,12 @@
 	ld	($5800), a
 
 loop:	inc	a
-	ld	($ff01), a
+	ld	(bgcolor), a
 
 	jp	loop
 
 irq:	push	af
-	ld	a, ($ff01)
+	ld	a, (bgcolor)
 	rlca
 	rlca
 	rlca
@@ -90,3 +103,7 @@ irq:	push	af
 	.org	0xfdfd
 	jp	irq
 	.ds	257, $fd
+
+#data bss, 0xfc00, $fd
+
+bgcolor:	ds	1
