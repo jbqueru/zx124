@@ -22,7 +22,7 @@
 ;
 ; SPDX-License-Identifier: AGPL-3.0-or-later
 
-        org  0x5dc0
+        org     0x5da0
 
 	LD	A, $a5
         LD      ($4000), A
@@ -32,4 +32,4 @@
 	LD	A, $46
         LD      ($5800), A
 
-loop    jp  loop
+loop    JP      loop

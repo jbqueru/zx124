@@ -22,6 +22,4 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-1 clear 24000
-2 load "" code 24000
-3 randomize usr 24000
+1 clear 23968: load "" code 23968: randomize usr 23968
