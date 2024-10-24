@@ -65,7 +65,7 @@ cp LICENSE LICENSE_ASSETS AGPL_DETAILS.md README.md out/mbzx124
 git bundle create -q out/mbzx124/mbzx124.bundle HEAD main
 
 # Prepare a source code snapshot for folks who don't want to use git
-cp $(ls -1 | grep -v ^out\$) out/src
+cp $(ls -1 | grep -v ^out\$ | grep -v \\.rom\$) out/src
 (cd out && zip -9 -q mbzx124/src.zip src/*)
 
 # Put the final distro together
