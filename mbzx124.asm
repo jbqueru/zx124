@@ -73,9 +73,9 @@
 
 ; Fast RAM
 #code	text, $8000, $7c00		; 31 kiB of code in regular RAM
-#data	bss, $fC00, $1fd		; Almost 0.5 kB of variables in regular RAM
-#data	irqvecs, $fdfd, $104		; 0.25 kB and change for IM 2 interrupt handling (must be in regular RAM)
-#data	stack, $ff01, $ff		; Almost 0.25 kB of stack
+#data	bss, $fC00, $1fd		; ~0.5 kB of variables in regular RAM
+#data	irqvecs, $fdfd, $104		; ~0.25 kB for IM 2 interrupt handling (must be in regular RAM)
+#data	stack, $ff01, $ff		; ~0.25 kB of stack
 
 ; #############################################################################
 ; #############################################################################
