@@ -22,7 +22,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-# Reserve memory for our code, starting at 24k
+# Reserve memory for our code, starting at 23.5k
 10 clear 24063
 
 # Black magic, disable channel that displays text while loading
