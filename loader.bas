@@ -22,4 +22,17 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-1 clear val("24575"): poke val("23739"), val("111"): load "" screen$: load "" code: randomize usr val("24576")
+# Reserve memory for our code, starting at 24k
+10 clear 24575
+
+# Black magic, disable channel that displays text while loading
+20 poke 23739, 111
+
+# Load the splash screen
+30 load "" code
+
+# Load the actual code
+40 load "" code
+
+# Jump into the code
+50 randomize usr 24576
