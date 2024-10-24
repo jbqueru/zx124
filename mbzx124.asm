@@ -50,18 +50,27 @@
 ;		movea instead of move on 680x0 when the code relies on the
 ;		flags not getting modified.
 
-	.z80
-	.dotnames
-	.reqcolon
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                      Assembler setup directives                       ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
 
-#target rom
-#code	text, 0x5dc0, 0xa180
-#data	bss, 0xfc00, $fd
+	.reqcolon			; labels are required to have colons - that way zasm can recognize non-labels
+	.dotnames			; labels are allowed to contain dots - note that zasm doesn't make them local
+	.z80				; We're on a ZX Spectrum
+
+#target ram				; Create a plain binary image
+#code	text, 0x5dc0, 0xa180		; Code segment starts right after BASIC
+#data	bss, 0xfc00, $fd		; BSS starts just before the interrupt block
 
 
 
 #code	text
-	.org	0x5dc0
 
 ; ###########
 ; ##       ##
