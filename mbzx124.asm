@@ -101,10 +101,7 @@
 ; set up stack
 	ld	sp, 0
 
-; set up interrupt handler
-	ld	a, $fe
-	ld	i, a
-
+; set up IM 2 boilerplate
 	ld	a, $c3
 	ld	hl, $fdfd
 	ld	(hl), a
@@ -123,6 +120,10 @@ SetIrq:	ld	(hl), c
 	djnz	SetIrq
 	inc	h
 	ld	(hl), c
+
+; set up interrupt handler
+	ld	a, $fe
+	ld	i, a
 
 ; enable interrupts
 	im	2
