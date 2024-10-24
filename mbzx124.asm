@@ -22,6 +22,34 @@
 ;
 ; SPDX-License-Identifier: AGPL-3.0-or-later
 
+; Coding style:
+;	- ASCII
+;	- hard tabs, 8 characters wide, except in ASCII art
+;	- 120 columns overall
+;	- Standalone block comments in the first 80 columns
+;	- Code-related block comments allowed in the last 80 columns
+;	- Note: rulers at 40, 80 and 120 columns help with source width
+;
+;	- Assembler directives are .lowercase with a leading period
+;	- Mnemomics and registers are lowercase unless otherwise required
+;	- Symbols for code are CamelCase
+;	- Symbols for variables are snake_case
+;	- Symbols for app-specific constants are ALL_CAPS
+;	- Symbols for OS constants, hardware registers are ALL_CAPS
+;	- File-specific symbols start with an underscore
+;	- Related symbols start with the same prefix (so they sort together)
+;	- Hexadecimal constants are lowercase ($eaf00d).
+;
+;	- Include but comment out instructions that help readability but
+;		don't do anything (e.g. redundant CLC on 6502 when the carry is
+;		guaranteed already to be clear). The comment symbol should be
+;		where the instruction would be, i.e. not on the first column.
+;		There should be an explanation in a comment.
+;	- Use the full instruction mnemonic whenever possible, and especially
+;		when a shortcut would potentially cause confusion. E.g. use
+;		movea instead of move on 680x0 when the code relies on the
+;		flags not getting modified.
+
 	.org	0x5dc0
 
 	LD	A, $a5
