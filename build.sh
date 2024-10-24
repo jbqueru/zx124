@@ -40,7 +40,7 @@ dd if=/dev/random of=out/obj/splash.bin bs=256 count=27
 bin2tap out/obj/splash.bin out/obj/splash.tap -a 0x4000
 
 # Assemble the actual code
-zasm mbzx124.asm -o out/obj/mbzx124.bin
+zasm --opcodes --labels --cycles mbzx124.asm -o out/obj/mbzx124.bin
 
 # Package the machine code into a tap image
 bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x5dc0
