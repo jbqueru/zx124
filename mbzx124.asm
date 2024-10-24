@@ -65,12 +65,13 @@
 	.z80				; We're on a ZX Spectrum
 
 #target ram				; Create a plain binary image
-#code	text, $5e00, $a101		; Code segment starts right after BASIC
-#data	bss, $fc00, $fd			; BSS starts just before the interrupt block
+#code	slowtext, $5e00, $2200		; Slow code segment starts right after BASIC
+#code	text, $8000, $7f01		; Fast code segment uses non-contended RAM
+#data	slowbss, $5b00, $300		; Slow BSS overwrites reserved area
+#data	bss, $fc00, $fd			; Fast BSS is just below the interrupt block
+#data	stack, $ff01, $ff		; Stack rounds up the list
 
-
-
-#code	text
+#code	slowtext
 
 ; ###########
 ; ##       ##
@@ -140,6 +141,8 @@ irq:	push	af
 ; ## Boilerplate for interrupt handling ##
 ; ##                                    ##
 ; ########################################
+
+#code	text
 
 	.org	$fdfd
 	jp	irq
