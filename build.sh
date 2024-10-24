@@ -23,6 +23,12 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+##################################################
+##                                              ##
+## Build the tape image used during development ##
+##                                              ##
+##################################################
+
 mkdir -p out/obj
 mkdir -p out/tap
 
@@ -37,3 +43,30 @@ bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 24000
 
 # Put the whole tape image together, loader + binary
 cat out/obj/loader.tap out/obj/code.tap > out/tap/mbzx124.tap
+
+####################################
+##                                ##
+## Build the distribution package ##
+##                                ##
+####################################
+
+rm -rf out/mbzx124 out/src out/dist
+mkdir -p out/mbzx124
+mkdir -p out/src
+mkdir -p out/dist
+
+# Put the actual binary in the distribution folder
+cp out/tap/mbzx124.tap out/mbzx124
+
+# Put the README and license files in the distribution folder
+cp LICENSE LICENSE_ASSETS AGPL_DETAILS.md README.md out/mbzx124
+
+# Bundle the source history in the distribution folder
+git bundle create -q out/mbzx124/mbzx124.bundle HEAD main
+
+# Prepare a source code snapshot for folks who don't want to use git
+cp $(ls -1 | grep -v ^out\$) out/src
+(cd out && zip -9 -q mbzx124/src.zip src/*)
+
+# Put the final distro together
+(cd out && zip -9 -q dist/mbzx124.zip mbzx124/*)
