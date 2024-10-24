@@ -23,6 +23,14 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+#################################################
+##                                             ##
+## Clean things up before starting a new build ##
+##                                             ##
+#################################################
+
+rm -rf out
+
 ##################################################
 ##                                              ##
 ## Build the tape image used during development ##
@@ -54,7 +62,6 @@ cat out/obj/loader.tap out/obj/splash.tap out/obj/code.tap > out/tap/mbzx124.tap
 ##                                ##
 ####################################
 
-rm -rf out/mbzx124 out/src out/dist
 mkdir -p out/mbzx124
 mkdir -p out/src
 mkdir -p out/dist
