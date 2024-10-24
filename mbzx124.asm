@@ -55,7 +55,12 @@
 	.reqcolon
 
 #target rom
-#code text, 0x5dc0, 0xa180
+#code	text, 0x5dc0, 0xa180
+#data	bss, 0xfc00, $fd
+
+
+
+#code	text
 	.org	0x5dc0
 
 ; ###########
@@ -131,6 +136,5 @@ irq:	push	af
 	jp	irq
 	.ds	257, $fd
 
-#data bss, 0xfc00, $fd
-
+#data	bss
 bgcolor:	ds	1
