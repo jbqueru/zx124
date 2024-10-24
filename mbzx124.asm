@@ -52,17 +52,41 @@
 
 	.org	0x5dc0
 
-	LD	A, $a5
-	LD	($4000), A
-	LD	($4200), A
-	LD	($4500), A
-	LD	($4700), A
-	LD	A, 0
-	LD	($4100), A
-	LD	($4300), A
-	LD	($4400), A
-	LD	($4600), A
-	LD	A, $46
-	LD	($5800), A
+	di
+	ld	a, $fe
+	ld	i, a
+	im	2
+	ei
 
-loop:	JP	loop
+	ld	a, $a5
+	ld	($4000), a
+	ld	($4200), a
+	ld	($4500), a
+	ld	($4700), a
+	ld	a, 0
+	ld	($4100), a
+	ld	($4300), a
+	ld	($4400), a
+	ld	($4600), a
+	ld	a, $46
+	ld	($5800), a
+
+loop:	inc	a
+	ld	($ff01), a
+
+	jp	loop
+
+irq:	push	af
+	ld	a, ($ff01)
+	rlca
+	rlca
+	rlca
+	and	7
+	out	($fe), a
+	pop	af
+	ei
+	ret
+
+	.org	0xfdfd
+	jp	irq
+	.ds	257, $fd
