@@ -59,41 +59,69 @@
 ; #############################################################################
 ; ###                                                                       ###
 ; ###                                                                       ###
-; ###                              Boilerplate                              ###
+; ###                          Initial boilerplate                          ###
 ; ###                                                                       ###
 ; ###                                                                       ###
 ; #############################################################################
 ; #############################################################################
 
 #code	text
+
+
+; ********************************************
+; * Disable interrupts, save important state *
+; ********************************************
 	di
-	push	iy
+	push	iy			; IY is reserved for Spectrum ROM
+	ld	a, i			; Save I since we're modifying it
+	push	af
 
-	ld	a, i
-	ld	(save_i), a
+; ************************************************
+; * Configure our own interrupts                 *
+; * Interrupt handler is at $7f7f                *
+; * Interrupt table is 257 bytes of $7f at $8000 *
+; ************************************************
 
+; Configure I register
 	ld	a, $7f
 	ld	i, a
 
+; Write interrupt table
 	ld	hl, $8000
-	ld	b, l
+	ld	b, l			; L is 0 here, loop 256 times
 setirq:
-	ld	(hl), a
+	ld	(hl), a			; A is still $7f
 	inc	l
 	djnz	setirq
-	inc	h
-	ld	(hl), a
+	inc	h			; at this point L has wrapped around, so HL was $8000, now $8100
+	ld	(hl), a			; and A is still $7f
+
+; Write interrupt handler
 	ld	h, a
-	ld	l, a
+	ld	l, a			; now HL is $7f7f
 	ld	de, irq
-	ld	(hl), $c3
+	ld	(hl), $c3		; c3 is opcode for JP
 	inc	l
-	ld	(hl), e
+	ld	(hl), e			; litte-endian
 	inc	l
 	ld	(hl), d
 
+; *********************
+; * Enable interrupts *
+; *********************
 	im	2
 	ei
+
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###         Clear screen, flash logo, set palette for next stage          ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
+
 
 	ld	hl, $5800
 	ld	bc, 3
@@ -190,24 +218,52 @@ clear0:
 	dec	d
 	jp	nz, clear3
 
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                           Final boilerplate                           ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
+
+; Disable interrupts while we modify them
 	di
-	im	1
-	ld	a, (save_i)
+; Restore I register
+	pop	af
 	ld	i, a
+; Restore IY register
 	pop	iy
+; Enable interrupts back
+	im	1
 	ei
+; Return to BASIC
 	ret
 
-irq:	push	af
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                           Interrupt handler                           ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
+
+irq:
+; Save what we use (AF)
+	push	af
+; Increment IRQ count
 	ld	a, (irqcount)
 	inc	a
 	ld	(irqcount), a
+; Restore what we used (AF)
 	pop	af
+; Terminate interrupt handler
 	ei
 	ret
 
 #data	bss
 irqcount:
-	ds	1
-save_i:
 	ds	1
