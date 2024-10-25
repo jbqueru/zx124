@@ -66,6 +66,34 @@
 ; #############################################################################
 
 #code	text
+	di
+	push	iy
+
+	ld	a, i
+	ld	(save_i), a
+
+	ld	a, $7f
+	ld	i, a
+
+	ld	hl, $8000
+	ld	b, l
+setirq:
+	ld	(hl), a
+	inc	l
+	djnz	setirq
+	inc	h
+	ld	(hl), a
+	ld	h, a
+	ld	l, a
+	ld	de, irq
+	ld	(hl), $c3
+	inc	l
+	ld	(hl), e
+	inc	l
+	ld	(hl), d
+
+	im	2
+	ei
 
 	ld	hl, $5800
 	ld	bc, 3
@@ -162,7 +190,24 @@ clear0:
 	dec	d
 	jp	nz, clear3
 
+	di
+	im	1
+	ld	a, (save_i)
+	ld	i, a
+	pop	iy
+	ei
+	ret
 
+irq:	push	af
+	ld	a, (irqcount)
+	inc	a
+	ld	(irqcount), a
+	pop	af
+	ei
 	ret
 
 #data	bss
+irqcount:
+	ds	1
+save_i:
+	ds	1
