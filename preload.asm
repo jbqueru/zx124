@@ -127,34 +127,48 @@ setirq:
 ; #############################################################################
 ; #############################################################################
 
+; ******************************
+; * Set all attributes to grey *
+; ******************************
 
 	ld	hl, $5800
-	ld	bc, 3
+	ld	bc, 3			; b = 0 (256 loops), c = 3 - 768 total
 grey:
-	ld	(hl), $3f
+	ld	(hl), $3f		; 3f is 00 111 111, i.e. grey bg/grey fg
 	inc	l
-	djnz	grey
+	djnz	grey			; inner loop
 	inc	h
 	dec	c
-	jr	nz, grey
+	jr	nz, grey		; outer loop
+
+; ***********************
+; * Set border to black *
+; ***********************
 
 	ld	a, 0
 	out	($fe), a
 
+; ***************************
+; * Clear whole framebuffer *
+; ***************************
+
 	ld	hl, $4000
-	ld	bc, 24
+	ld	bc, 24			; b = 0 (256 loops), c = 24 - 6144 total
 clear:
-	ld	(hl), $ff
+	ld	(hl), 0
 	inc	l
-	djnz	clear
+	djnz	clear			; inner loop
 	inc	h
 	dec	c
-	jr	nz, clear
+	jr	nz, clear		; outer loop
+
+
+
 
 	ld	hl, $5800
 	ld	bc, 3
 greyblack:
-	ld	(hl), $7
+	ld	(hl), $38		; 38 is 00 111 000, grey bg / black fg
 	inc	l
 	djnz	greyblack
 	inc	h
@@ -181,7 +195,7 @@ sweep2:
 notlogo:
 	ld	b, 8
 sweep1:
-	ld	(hl), 0
+	ld	(hl), $ff
 	inc	h
 	djnz	sweep1
 	ld	a, h
@@ -206,7 +220,7 @@ clear3:
 clear2:
 	ld	b, 8
 clear1:
-	ld	(hl), 0
+	ld	(hl), $ff
 	inc	h
 	djnz	clear1
 	ld	a, h
