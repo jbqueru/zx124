@@ -28,11 +28,17 @@
 # Black magic, disable channel that displays text while loading
 20 poke 23739, 111
 
-# Load the splash screen
+# Load the preload code
 30 load "" code
 
-# Load the actual code
-40 load "" code
+# Run preloader code
+40 randomize usr 24064
 
-# Jump into the code
-50 randomize usr 24064
+# Load the splash screen
+50 load "" code
+
+# Load the main code
+60 load "" code
+
+# Run main code
+70 randomize usr 24064

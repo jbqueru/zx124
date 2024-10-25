@@ -47,6 +47,12 @@ zmakebas -a 1 -n MB\'s\ ZX124 -o out/obj/loader.tap loader.bas
 dd if=/dev/random of=out/obj/splash.bin bs=256 count=27
 bin2tap out/obj/splash.bin out/obj/splash.tap -a 0x4000
 
+# Assemble the preloader code
+zasm --opcodes --labels --cycles preload.asm -o out/obj/preload.bin
+
+# Package the preloader binary into a tap image
+bin2tap out/obj/preload.bin out/obj/preload.tap -a 0x5e00
+
 # Assemble the actual code
 zasm --opcodes --labels --cycles mbzx124.asm -o out/obj/mbzx124.bin
 
@@ -54,7 +60,7 @@ zasm --opcodes --labels --cycles mbzx124.asm -o out/obj/mbzx124.bin
 bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x5e00
 
 # Put the whole tape image together, loader + binary
-cat out/obj/loader.tap out/obj/splash.tap out/obj/code.tap > out/tap/mbzx124.tap
+cat out/obj/loader.tap out/obj/preload.tap out/obj/splash.tap out/obj/code.tap > out/tap/mbzx124.tap
 
 ####################################
 ##                                ##
