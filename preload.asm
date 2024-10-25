@@ -67,14 +67,19 @@
 
 #code	text
 
-
 ; ********************************************
 ; * Disable interrupts, save important state *
 ; ********************************************
+
+; Interrupts off so that we can start messing with things
 	di
-	push	iy			; IY is reserved for Spectrum ROM
-	ld	a, i			; Save I since we're modifying it
-	push	af
+
+; Save IY register, which is reserved by the Spectrum ROM
+	push	iy
+
+; Save I register since it's a system register that we're modifying
+	ld	a, i			; we can only access I through A
+	push	af			; we must push all of AF to save A
 
 ; ************************************************
 ; * Configure our own interrupts                 *
@@ -91,7 +96,7 @@
 	ld	b, l			; L is 0 here, loop 256 times
 setirq:
 	ld	(hl), a			; A is still $7f
-	inc	l
+	inc	l			; we know that we're only touching one page
 	djnz	setirq
 	inc	h			; at this point L has wrapped around, so HL was $8000, now $8100
 	ld	(hl), a			; and A is still $7f
@@ -101,9 +106,9 @@ setirq:
 	ld	l, a			; now HL is $7f7f
 	ld	de, irq
 	ld	(hl), $c3		; c3 is opcode for JP
-	inc	l
+	inc	l			; HL is $7f80 after that
 	ld	(hl), e			; litte-endian
-	inc	l
+	inc	l			; HL is $7f81 after that
 	ld	(hl), d
 
 ; *********************
