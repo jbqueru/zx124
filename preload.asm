@@ -167,7 +167,19 @@ clear:
 SweepY:
   ld b, 32
 SweepX:
+  ld a, c
+  cp 17
+  jr nc, DoClear
+  cp 9
+  jr c, DoClear
+  ld a, b
+  cp 25
+  jr nc, DoClear
+  cp 9
+  jr nc, NoClear
+DoClear:
   ld (hl), $7		; 00 000 111 black bg, grey fg
+NoClear:
   inc hl
   djnz SweepX
   push hl
