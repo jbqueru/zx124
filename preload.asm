@@ -162,9 +162,25 @@ clear:
 	dec	c
 	jr	nz, clear		; outer loop
 
+  ld hl, $5800
+  ld c, 24
+SweepY:
+  ld b, 32
+SweepX:
+  ld (hl), $7		; 00 000 111 black bg, grey fg
+  inc hl
+  djnz SweepX
+  push hl
+  ld hl, irqcount
+  ld a, (hl)
+WaitVbl:
+  cp (hl)
+  jr z, WaitVbl
+  pop hl
+  dec c
+  jr nz, SweepY
 
-
-
+#if 0
 	ld	hl, $5800
 	ld	bc, 3
 greyblack:
@@ -236,6 +252,7 @@ clear0:
 	ld	h, a
 	dec	d
 	jp	nz, clear3
+#endif
 
 ; #############################################################################
 ; #############################################################################
