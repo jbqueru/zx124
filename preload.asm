@@ -192,6 +192,25 @@ WaitVbl:
   dec c
   jr nz, SweepY
 
+
+  ld hl, $5800
+  ld c, 24
+SetY:
+  ld b, 32
+SetX:
+  ld (hl), $47		; 01 000 111 black bg, white fg
+  inc hl
+  djnz SetX
+  push hl
+  ld hl, irqcount
+  ld a, (hl)
+WaitSetVbl:
+  cp (hl)
+  jr z, WaitSetVbl
+  pop hl
+  dec c
+  jr nz, SetY
+
 #if 0
 	ld	hl, $5800
 	ld	bc, 3
