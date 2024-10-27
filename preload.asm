@@ -162,6 +162,10 @@ clear:
 	dec	c
 	jr	nz, clear		; outer loop
 
+; ******************************************
+; * Build a transient logo from attributes *
+; ******************************************
+
   ld hl, $5800
   ld c, 24
 SweepY:
@@ -192,27 +196,39 @@ WaitVbl:
   dec c
   jr nz, SweepY
 
+; ***************************************
+; * Set up attributes for splash screen *
+; ***************************************
 
-  ld hl, $5800
+SetBg:
+  LD HL, $5800		; Address of the attributes
   LD DE, colors
-  ld c, 24
-SetY:
-  ld b, 32
-SetX:
+  LD C, 24		; 24 rows of attributes
+SetBgY:
+  LD B, 16		; 32 columns of attributes, 2 per iteration
+SetBgX:
+; Do the actual read/write
   LD A, (DE)
   LD (HL), A
   INC DE
-  inc hl
-  djnz SetX
-  push hl
-  ld hl, irqcount
-  ld a, (hl)
-WaitSetVbl:
-  cp (hl)
-  jr z, WaitSetVbl
-  pop hl
-  dec c
-  jr nz, SetY
+  INC HL
+  LD A, (DE)
+  LD (HL), A
+  INC DE
+  INC HL
+; Loop within the row
+  DJNZ SetBgX
+; Wait for VBL
+  PUSH HL
+  LD HL, irqcount
+  LD A, (HL)
+SetBgWait:
+  CP (HL)
+  JR Z, SetBgWait
+  POP HL
+; Loop to next row
+  DEC C
+  JR NZ, SetBgY
 
 #if 0
 	ld	hl, $5800
