@@ -50,7 +50,7 @@ zasm --opcodes --labels --cycles preload.asm -o out/obj/preload.bin
 bin2tap out/obj/preload.bin out/obj/preload.tap -a 0x5e00
 
 # Prepare the loader screen
-dd if=/dev/random of=out/obj/splash.bin bs=256 count=27
+dd if=/dev/random of=out/obj/splash.bin bs=256 count=24
 bin2tap out/obj/splash.bin out/obj/splash.tap -a 0x4000
 
 # Assemble the actual code

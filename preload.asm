@@ -52,7 +52,7 @@
 ; Contended RAM
 #data	screen, $4000, $1800		; 6 kiB of screen bitmap data
 #data	pixels, $5800, $300		; 0.75 kiB of screen attribute data
-#code	text, $5e00, $100		; some amount of code, right after BASIC
+#code	text, $5e00, $400		; some amount of code, right after BASIC
 #data	bss, $6e00, $100		; 0.25kiB of variables
 
 ; #############################################################################
@@ -194,11 +194,14 @@ WaitVbl:
 
 
   ld hl, $5800
+  LD DE, colors
   ld c, 24
 SetY:
   ld b, 32
 SetX:
-  ld (hl), $47		; 01 000 111 black bg, white fg
+  LD A, (DE)
+  LD (HL), A
+  INC DE
   inc hl
   djnz SetX
   push hl
@@ -330,6 +333,15 @@ irq:
 ; Terminate interrupt handler
 	ei
 	ret
+
+; Background data
+colors:
+	.rept 24
+	.db	$41, $41, $41, $41, $41, $41, $41, $41, $41, $41, $41
+	.db	$07, $07, $07, $07, $07, $07, $07, $07, $07, $07
+	.db	$02, $02, $02, $02, $02, $02, $02, $02, $02, $02, $02
+	.endm
+
 
 #data	bss
 irqcount:
