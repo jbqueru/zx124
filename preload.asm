@@ -208,14 +208,23 @@ SetBgY:
   LD B, 16		; 32 columns of attributes, 2 per iteration
 SetBgX:
 ; Do the actual read/write
+
   LD A, (DE)
-  AND %00001000
+  AND %10000000
   JR NZ, SetBg1Light
   LD A, (DE)
+  RRA
+  RRA
+  RRA
+  RRA
   AND %00000111
   JR SetBg1Done
 SetBg1Light:
   LD A, (DE)
+  RRA
+  RRA
+  RRA
+  RRA
   AND %00000111
   OR %01000000
 SetBg1Done:
@@ -223,27 +232,20 @@ SetBg1Done:
   INC HL
 
   LD A, (DE)
-  AND %10000000
+  AND %00001000
   JR NZ, SetBg2Light
   LD A, (DE)
-  RRA
-  RRA
-  RRA
-  RRA
   AND %00000111
   JR SetBg2Done
 SetBg2Light:
   LD A, (DE)
-  RRA
-  RRA
-  RRA
-  RRA
   AND %00000111
   OR %01000000
 SetBg2Done:
   LD (HL), A
-  INC DE
   INC HL
+
+  INC DE
 ; Loop within the row
   DJNZ SetBgX
 ; Wait for VBL
@@ -308,9 +310,9 @@ irq:
 colors:
 	.rept 24
 	.db $99, $99, $99, $99, $99
-	.db $79
+	.db $97
 	.db $77, $77, $77, $77
-	.db $27
+	.db $72
 	.db $22, $22, $22, $22, $22
 	.endm
 
