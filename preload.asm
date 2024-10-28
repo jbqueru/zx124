@@ -166,21 +166,29 @@ clear:
 ; * Build a transient logo from attributes *
 ; ******************************************
 
+  LD IX, logo
   ld hl, $5800
   ld c, 24
 SweepY:
   ld b, 32
 SweepX:
-  ld a, c
-  cp 17
-  jr nc, DoClear
-  cp 9
-  jr c, DoClear
-  ld a, b
-  cp 25
-  jr nc, DoClear
-  cp 9
-  jr nc, NoClear
+  LD A, C
+  CP 17
+  JR NC, DoClear
+  CP 9
+  JR C, DoClear
+  LD A, B
+  CP 25
+  JR NC, DoClear
+  CP 9
+  JR C, DoClear
+  AND %00000111
+  JR NZ, GotData
+  LD D, (IX)
+  INC IX
+GotData:
+  SLA D
+  JR C, NoClear
 DoClear:
   ld (hl), $7		; 00 000 111 black bg, grey fg
 NoClear:
@@ -316,6 +324,16 @@ colors:
 	.db $22, $22, $22, $22, $22
 	.endm
 
+; MB logo
+logo:
+  .db %11000110, %01111110
+  .db %11000110, %01100011
+  .db %11101110, %01100011
+  .db %11111110, %01111110
+  .db %11010110, %01100011
+  .db %11000110, %01100011
+  .db %11000110, %01100011
+  .db %11000110, %01111110
 
 #data	bss
 irqcount:
