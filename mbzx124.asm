@@ -88,7 +88,7 @@
 
 ; Contended RAM
 #data screen, $4000, $1b00	; 6 kiB of screen bitmap
-#data attributes, $4000, $1b00	; 0.75 kiB of screen attributes
+#data attributes, $5800, $300	; 0.75 kiB of screen attributes
 #data slowbss, $5b00, $300	; 0.75 kiB of ULA variables
 #code slowtext, $5e00, $2200	; 8.5 kiB of code in ULA RAM, right after BASIC
 
@@ -108,7 +108,7 @@
 ; #############################################################################
 ; #############################################################################
 
-#code	slowtext
+#code slowtext
 
 ; ########################
 ; ##                    ##
@@ -117,17 +117,17 @@
 ; ########################
 
 ; disable interrupts
-	di
+  DI
 
 ; set up stack
-	ld	sp, 0
+  LD SP, 0
 
 ; set up IM 2 boilerplate
 	ld	a, $c3
 	ld	hl, $fdfd
 	ld	(hl), a
 	inc	l
-	ld	de, irq
+	ld	de, IrqVbl
 	ld	(hl), e
 	inc	l
 	ld	(hl), d
@@ -175,9 +175,7 @@ SetIrq:	ld	(hl), c
 ; ##                           ##
 ; ###############################
 
-loop:	inc	a
-	ld	(bgcolor), a
-	jp	loop
+loop:	jp	loop
 
 ; #######################
 ; ##                   ##
@@ -185,13 +183,10 @@ loop:	inc	a
 ; ##                   ##
 ; #######################
 
-irq:	push	af
-	ld	a, (bgcolor)
-	rlca
-	rlca
-	rlca
-	and	7
-	out	($fe), a
+IrqVbl:	push	af
+	ld	a, (vbl_count)
+	inc	a
+	ld	(vbl_count), a
 	pop	af
 	ei
 	ret
@@ -203,4 +198,5 @@ irq:	push	af
 ; ########################################
 
 #data	bss
-bgcolor:	ds	1
+vbl_count:
+	.ds	1
