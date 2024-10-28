@@ -15,6 +15,8 @@ This code is being developed with the following tools:
 * The [`zasm` z80 assembler](https://k1.spdns.de/Develop/Projects/zasm/)
 * The [`bin2tap` tape image generator](https://github.com/retro-speccy/bin2tap)
 * The [`Fuse` ZX Spectrum emulator](https://fuse-emulator.sourceforge.net/)
+* The [`ZEsarUX` emulator for ZX Spectrum and other Z80-based machines](https://github.com/chernandezba/zesarux)
+* The [`Clock Signal` low-latency multi-machine emulator](https://github.com/TomHarte/CLK)
 
 ## Build process
 
