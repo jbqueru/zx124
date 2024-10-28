@@ -51,7 +51,7 @@
 
 ; Contended RAM
 #data	screen, $4000, $1800		; 6 kiB of screen bitmap data
-#data	pixels, $5800, $300		; 0.75 kiB of screen attribute data
+#data	colors, $5800, $300		; 0.75 kiB of screen attribute data
 #code	text, $5e00, $400		; some amount of code, right after BASIC
 
 ; #############################################################################
@@ -132,7 +132,7 @@ SetupIrq:
 ; * That way, whatever is in the bitmap disappears *
 ; **************************************************
 
-  LD HL, $5800		; Destination = start address of color attributes
+  LD HL, colors		; Destination = start address of color attributes
   LD BC, 3		; b = 0 (256 loops), c = 3, i.e. 768 total
 
 SetGrey:
@@ -154,7 +154,7 @@ SetGrey:
 ; * Clear whole framebuffer *
 ; ***************************
 
-  LD HL, $4000		; Destination = start address of framebuffer
+  LD HL, screen		; Destination = start address of framebuffer
   LD BC, 24		; b = 0 (256 loops), c = 24 - 6144 total
 
 FbClear:
@@ -171,7 +171,7 @@ FbClear:
 
 ; Initialize pointers
   LD IX, gfx_logo	; Source data = logo bitmap
-  LD HL, $5800		; Destination = color attributes
+  LD HL, colors		; Destination = color attributes
   LD C, 24		; 24 rows per screen
 
 SweepRow:
@@ -221,8 +221,8 @@ SweepClearDone:
 ; ***************************************
 
 SetBg:
-  LD HL, $5800		; Address of the attributes
-  LD DE, colors
+  LD HL, colors		; Address of the attributes
+  LD DE, gfx_colors
   LD C, 24		; 24 rows of attributes
 SetBgY:
   LD B, 16		; 32 columns of attributes, 2 per iteration
@@ -343,7 +343,7 @@ gfx_logo:
 ; Packed, 1 color per nybble, MSB on the left
 ; Within each nybble, MSB is the brightness attribute
 
-colors:
+gfx_colors:
   .rept 24
   .db $99, $99, $99, $99, $99
   .db $97
