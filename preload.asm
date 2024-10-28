@@ -168,9 +168,9 @@ SetupIrq:
 
 SetGray:
   LD (HL), $3f		; 3f is 00 111 111, i.e. gray bg/gray fg
-  INC L			; within the inner loop, L doesn't overflow
+  INC L			; within the inner loop, L doesn't wrap
   DJNZ SetGray		; inner loop
-  INC H			; here, L has just had an overflow, increment H
+  INC H			; here, L has just wrapped, increment H
   DEC C
   JR NZ, SetGray	; outer loop
 
@@ -186,13 +186,13 @@ SetGray:
 ; ***************************
 
   LD HL, screen		; Destination = start address of framebuffer
-  LD BC, 24		; b = 0 (256 loops), c = 24 - 6144 total
+  LD BC, $0018		; b = 0 (256 loops), c = 24, i.e. 6144 total
 
 FbClear:
   LD (HL), 0
-  INC L
+  INC L			; within the inner loop, L doesn't wrap
   DJNZ FbClear		; inner loop
-  INC H
+  INC H			; L has just wrapped, increment H
   DEC C
   JR NZ, FbClear	; outer loop
 
