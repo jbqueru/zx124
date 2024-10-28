@@ -66,22 +66,37 @@
 ; #############################################################################
 ; #############################################################################
 
-	.reqcolon			; labels are required to have colons - that way zasm can recognize non-labels
-	.dotnames			; labels are allowed to contain dots - note that zasm doesn't make them local
-	.z80				; We're on a ZX Spectrum
+; ******************
+; * zasm paramters *
+; ******************
 
-#target ram				; Create a plain binary image
+  .reqcolon		; labels are required to have colons
+			;   that way zasm can recognize non-labels
+  .dotnames		; labels are allowed to contain dots
+			;   note that zasm doesn't make them local
+  .z80			; We're on a ZX Spectrum
+
+; ***************
+; * output type *
+; ***************
+
+#target ram		; Create a plain binary image
+
+; *****************
+; * memory layout *
+; *****************
 
 ; Contended RAM
-#data	screen, $4000, $1b00		; 6.75 kiB of screen data
-#data	slowbss, $5b00, $300		; 0.75 kiB of slow variables, overwriting reserved area
-#code	slowtext, $5e00, $2200		; 8.5 kiB of slow code, right after BASIC
+#data screen, $4000, $1b00	; 6 kiB of screen bitmap
+#data attributes, $4000, $1b00	; 0.75 kiB of screen attributes
+#data slowbss, $5b00, $300	; 0.75 kiB of ULA variables
+#code slowtext, $5e00, $2200	; 8.5 kiB of code in ULA, right after BASIC
 
 ; Fast RAM
-#code	text, $8000, $7c00		; 31 kiB of code in regular RAM
-#data	bss, $fC00, $1fd		; ~0.5 kB of variables in regular RAM
-#data	irqvecs, $fdfd, $104		; ~0.25 kB for IM 2 interrupt handling (must be in regular RAM)
-#data	stack, $ff01, $ff		; ~0.25 kB of stack
+#code text, $8000, $7c00	; 31 kiB of code in CPU RAM
+#data bss, $fC00, $1fd		; ~0.5 kB of variables in CPU RAM
+#data irqvecs, $fdfd, $104	; ~0.25 kB for IM 2 interrupt handling
+#data stack, $ff01, $ff		; ~0.25 kB of stack
 
 ; #############################################################################
 ; #############################################################################
