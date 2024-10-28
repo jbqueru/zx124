@@ -57,16 +57,30 @@
 ; #############################################################################
 ; #############################################################################
 
-	.reqcolon			; labels are required to have colons - that way zasm can recognize non-labels
-	.dotnames			; labels are allowed to contain dots - note that zasm doesn't make them local
-	.z80				; We're on a ZX Spectrum
+; ******************
+; * zasm paramters *
+; ******************
 
-#target ram				; Create a plain binary image
+  .reqcolon		; labels are required to have colons
+			;   that way zasm can recognize non-labels
+  .dotnames		; labels are allowed to contain dots
+			;   note that zasm doesn't make them local
+  .z80			; We're on a ZX Spectrum
 
-; Contended RAM
-#data	screen, $4000, $1800		; 6 kiB of screen bitmap data
-#data	colors, $5800, $300		; 0.75 kiB of screen attribute data
-#code	text, $5e00, $250		; some amount of code, right after BASIC
+; ***************
+; * output type *
+; ***************
+
+#target ram		; Create a plain binary image
+
+; *****************
+; * memory layout *
+; *****************
+
+#data screen, $4000, $1800	; 6 kiB of screen bitmap data
+#data colors, $5800, $300	; 0.75 kiB of screen attribute data
+#code text, $5e00, $250		; some amount of code, right after BASIC
+				;   this is adjusted to match the build
 
 ; #############################################################################
 ; #############################################################################
@@ -78,7 +92,7 @@
 ; #############################################################################
 ; #############################################################################
 
-#code	text
+#code text
 
 ; ********************************************
 ; * Disable interrupts, save important state *
