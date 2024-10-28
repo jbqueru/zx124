@@ -90,7 +90,7 @@
 #data screen, $4000, $1b00	; 6 kiB of screen bitmap
 #data attributes, $4000, $1b00	; 0.75 kiB of screen attributes
 #data slowbss, $5b00, $300	; 0.75 kiB of ULA variables
-#code slowtext, $5e00, $2200	; 8.5 kiB of code in ULA, right after BASIC
+#code slowtext, $5e00, $2200	; 8.5 kiB of code in ULA RAM, right after BASIC
 
 ; Fast RAM
 #code text, $8000, $7c00	; 31 kiB of code in CPU RAM
