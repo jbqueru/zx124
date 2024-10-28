@@ -221,51 +221,67 @@ SweepClearDone:
 ; ***************************************
 
 SetBg:
-  LD HL, colors		; Address of the attributes
-  LD DE, gfx_colors
+  LD DE, gfx_colors	; source address: colors
+  LD HL, colors		; destination address: screen attributes
   LD C, 24		; 24 rows of attributes
+
 SetBgY:
   LD B, 16		; 32 columns of attributes, 2 per iteration
-SetBgX:
-; Do the actual read/write
 
+SetBgX:
+; Left color in color pair
   LD A, (DE)
-  AND %10000000
+  AND %10000000		; attribute bit of high nybble : set = bright color
   JR NZ, SetBg1Light
+
+; Left pair, dark variant
+SetBg1Dark:
   LD A, (DE)
+  RRA			; shift color 4 bits to the right
   RRA
   RRA
   RRA
-  RRA
-  AND %00000111
+  AND %00000111		; clear unwanted bits
   JR SetBg1Done
+
+; Left pair, light variant
 SetBg1Light:
   LD A, (DE)
+  RRA			; shift color 4 bites to the right
   RRA
   RRA
   RRA
-  RRA
-  AND %00000111
-  OR %01000000
-SetBg1Done:
-  LD (HL), A
-  INC HL
+  AND %00000111		; clear unwanted bits
+  OR %01000000		; set brightness bit
+  ; JR SetBg1Done	; fall through
 
-  LD A, (DE)
-  AND %00001000
+SetBg1Done:
+  LD (HL), A		; write attributes
+  INC HL		; next attribute block
+
+; Right color in color pair
+  LD A, (DE)		; attribute bit
+  AND %00001000		; attribute bit of low nybble : set = bright color
   JR NZ, SetBg2Light
+
+; Right pair, dark variant
+SetBg2Dark:
   LD A, (DE)
-  AND %00000111
+  AND %00000111		; clear unwanted bits
   JR SetBg2Done
+
+; Right pair, light variant
 SetBg2Light:
   LD A, (DE)
-  AND %00000111
-  OR %01000000
-SetBg2Done:
-  LD (HL), A
-  INC HL
+  AND %00000111		; clear unwanted bits
+  OR %01000000		; set brightness bit
+  ; JR SetBg2Done	; fall through
 
-  INC DE
+SetBg2Done:
+  LD (HL), A		; write attributes
+  INC HL		; next attribute block
+  INC DE		; next color pair
+
 ; Loop within the row
   DJNZ SetBgX
 ; Wait for VBL
