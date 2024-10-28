@@ -128,19 +128,21 @@ SetupIrq:
 ; #############################################################################
 ; #############################################################################
 
-; ******************************
-; * Set all attributes to grey *
-; ******************************
+; **************************************************
+; * Set all attributes to pure grey                *
+; * That way, whatever is in the bitmap disappears *
+; **************************************************
 
-	ld	hl, $5800
-	ld	bc, 3			; b = 0 (256 loops), c = 3 - 768 total
-grey:
-	ld	(hl), $3f		; 3f is 00 111 111, i.e. grey bg/grey fg
-	inc	l
-	djnz	grey			; inner loop
-	inc	h
-	dec	c
-	jr	nz, grey		; outer loop
+  LD HL, $5800
+  LD BC, 3		; b = 0 (256 loops), c = 3, i.e. 768 total
+
+SetGrey:
+  LD (HL), $3f		; 3f is 00 111 111, i.e. grey bg/grey fg
+  INC L
+  DJNZ SetGrey		; inner loop
+  INC H
+  DEC C
+  JR NZ, SetGrey	; outer loop
 
 ; ***********************
 ; * Set border to black *
