@@ -72,11 +72,11 @@
 ; ********************************************
 
 ; Interrupts off so that we can start messing with things
-	di
+	DI
 
 ; Save I register since it's a system register that we're modifying
-	ld	a, i			; we can only access I through A
-	push	af			; we must push all of AF to save A
+	LD	A, I			; we can only access I through A
+	PUSH 	AF			; we must push all of AF to save A
 
 ; ************************************************
 ; * Configure our own interrupts                 *
@@ -163,43 +163,58 @@ clear:
 ; * Build a transient logo from attributes *
 ; ******************************************
 
-  LD IX, logo
-  ld hl, $5800
-  ld c, 24
-SweepY:
-  ld b, 32
-SweepX:
+; Initialize pointers
+  LD IX, logo		; Source data = logo bitmap
+  LD HL, $5800		; Destination = palette attributes
+  LD C, 24		; 24 rows per screen
+
+SweepRow:
+  LD B, 32		; 32 columns per row
+
+SweepColumn:
+
+; Check whether we're outside the logo area
   LD A, C
   CP 17
-  JR NC, DoClear
+  JR NC, SweepClear	; above (row >= 17 from range 24..1)
   CP 9
-  JR C, DoClear
+  JR C, SweepClear	; below (row < 9 from range 24..1)
   LD A, B
   CP 25
-  JR NC, DoClear
+  JR NC, SweepClear	; left (column >= 25 from range 32..1)
   CP 9
-  JR C, DoClear
-  AND %00000111
-  JR NZ, GotData
-  LD D, (IX)
+  JR C, SweepClear	; right (column < 9 from range 32..1)
+  AND %00000111		; column multiple of 8? (i.e. 24 or 16)
+  JR NZ, SweepGotData	; if no, we already have data
+  LD D, (IX)		; if yes, get a new byte
   INC IX
-GotData:
+SweepGotData:
+
+; In logo area, check whether we have a pixel
   SLA D
-  JR C, NoClear
-DoClear:
-  ld (hl), $7		; 00 000 111 black bg, grey fg
-NoClear:
-  inc hl
-  djnz SweepX
-  push hl
-  ld hl, irq_count
-  ld a, (hl)
-WaitVbl:
-  cp (hl)
-  jr z, WaitVbl
-  pop hl
-  dec c
-  jr nz, SweepY
+  JR C, SweepClearDone	; We have a pixel: preserve attribute until next pass
+
+; Clear the palette attribute
+SweepClear:
+  LD (HL), 0		; All black
+
+; Next column
+SweepClearDone:
+  INC HL
+  DJNZ SweepColumn
+
+; Wait for VBL between rows
+  PUSH HL		; Save HL, it's our destination pointer
+  LD HL, irq_count
+  LD A, (HL)		; Read current VBL count
+SweepWaitVbl:
+  CP (HL)		; Did it change yet?
+  JR Z, SweepWaitVbl		; Wait until it changes
+  POP HL		; Restore HL
+
+; Next row
+  DEC C
+  JR NZ, SweepRow
 
 ; ***************************************
 ; * Set up attributes for splash screen *
