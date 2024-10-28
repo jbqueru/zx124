@@ -164,13 +164,13 @@ SetupIrq:
 ; **************************************************
 
   LD HL, colors		; Destination = start address of color attributes
-  LD BC, 3		; b = 0 (256 loops), c = 3, i.e. 768 total
+  LD BC, $0003		; b = 0 (256 loops), c = 3, i.e. 768 total
 
 SetGray:
   LD (HL), $3f		; 3f is 00 111 111, i.e. gray bg/gray fg
-  INC L
+  INC L			; within the inner loop, L doesn't overflow
   DJNZ SetGray		; inner loop
-  INC H
+  INC H			; here, L has just had an overflow, increment H
   DEC C
   JR NZ, SetGray	; outer loop
 
