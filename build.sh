@@ -101,5 +101,7 @@ echo '(*)'  zipping source snapshot
 (cd out && zip -9 -q mbzx124/src.zip src/*) || exit $?
 
 # Put the final package together
-echo '(*)' zipping final distribution package
+echo '(*)' zipping distribution package
 (cd out && zip -9 -q dist/mbzx124.zip mbzx124/*) || exit $?
+
+echo '(*)' FINISHED BUILDING SUCCESSFULLY
