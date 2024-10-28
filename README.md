@@ -11,18 +11,22 @@ some form of demo for ZX Spectrum.
 
 This code is being developed with the following tools:
 
-* The [`zmakebas` BASIC tokenizer](https://github.com/chris-y/zmakebas)
-* The [`zasm` z80 assembler](https://k1.spdns.de/Develop/Projects/zasm/)
-* The [`bin2tap` tape image generator](https://github.com/retro-speccy/bin2tap)
-* The [`Fuse` ZX Spectrum emulator](https://fuse-emulator.sourceforge.net/)
-* The [`ZEsarUX` emulator for ZX Spectrum and other Z80-based
-	machines](https://github.com/chernandezba/zesarux)
-* The [`Clock Signal` low-latency multi-machine
-	emulator](https://github.com/TomHarte/CLK)
-* The [`Sublime` text editor](https://www.sublimetext.com/)
-	- with the [`Z80 Assembly` syntax
-		highlighter](https://packagecontrol.io/packages/Z80%20Assembly)
-	- with `"detect_indentation": false` and `"tab_size": 8`
+* At build time:
+	+ The [`zmakebas` BASIC tokenizer](https://github.com/chris-y/zmakebas)
+	+ The [`zasm` z80 assembler](https://k1.spdns.de/Develop/Projects/zasm/)
+	+ The [`bin2tap` tape image generator](https://github.com/retro-speccy/bin2tap)
+* To run the code:
+	+ The [`Fuse` ZX Spectrum emulator](https://fuse-emulator.sourceforge.net/)
+	+ The [`ZEsarUX` emulator for ZX Spectrum and other Z80-based
+		machines](https://github.com/chernandezba/zesarux)
+	+ The [`Clock Signal` low-latency multi-machine
+		emulator](https://github.com/TomHarte/CLK)
+* As a development environment:
+	+ [Linux Mint](https://linuxmint.com/)
+	+ The [`Sublime` text editor](https://www.sublimetext.com/)
+		- with the [`Z80 Assembly` syntax
+			highlighter](https://packagecontrol.io/packages/Z80%20Assembly)
+		- with `"detect_indentation": false` and `"tab_size": 8`
 
 ## Build process
 
