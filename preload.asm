@@ -122,7 +122,7 @@ SetupIrq:
 ; #############################################################################
 ; ###                                                                       ###
 ; ###                                                                       ###
-; ###         Clear screen, flash logo, set palette for next stage          ###
+; ###        Clear screen, flash logo, set attributes for next stage        ###
 ; ###                                                                       ###
 ; ###                                                                       ###
 ; #############################################################################
@@ -133,7 +133,7 @@ SetupIrq:
 ; * That way, whatever is in the bitmap disappears *
 ; **************************************************
 
-  LD HL, $5800
+  LD HL, $5800		; Destination = start address of color attributes
   LD BC, 3		; b = 0 (256 loops), c = 3, i.e. 768 total
 
 SetGrey:
@@ -148,30 +148,31 @@ SetGrey:
 ; * Set border to black *
 ; ***********************
 
-	ld	a, 0
-	out	($fe), a
+  LD A, 0
+  OUT ($fe), A
 
 ; ***************************
 ; * Clear whole framebuffer *
 ; ***************************
 
-	ld	hl, $4000
-	ld	bc, 24			; b = 0 (256 loops), c = 24 - 6144 total
-clear:
-	ld	(hl), 0
-	inc	l
-	djnz	clear			; inner loop
-	inc	h
-	dec	c
-	jr	nz, clear		; outer loop
+  LD HL, $4000		; Destination = start address of framebuffer
+  LD BC, 24		; b = 0 (256 loops), c = 24 - 6144 total
+
+FbClear:
+  LD (HL), 0
+  INC L
+  DJNZ FbClear		; inner loop
+  INC H
+  DEC C
+  JR NZ, FbClear	; outer loop
 
 ; ******************************************
 ; * Build a transient logo from attributes *
 ; ******************************************
 
 ; Initialize pointers
-  LD IX, logo		; Source data = logo bitmap
-  LD HL, $5800		; Destination = palette attributes
+  LD IX, gfx_logo	; Source data = logo bitmap
+  LD HL, $5800		; Destination = color attributes
   LD C, 24		; 24 rows per screen
 
 SweepRow:
@@ -200,7 +201,7 @@ SweepGotData:
   SLA D
   JR C, SweepClearDone	; We have a pixel: preserve attribute until next pass
 
-; Clear the palette attribute
+; Clear the color attribute
 SweepClear:
   LD (HL), 0		; All black
 
@@ -330,18 +331,23 @@ IrqHandler:
   EI
   RET
 
-; Background data
-colors:
-	.rept 24
-	.db $99, $99, $99, $99, $99
-	.db $97
-	.db $77, $77, $77, $77
-	.db $72
-	.db $22, $22, $22, $22, $22
-	.endm
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                             Graphics data                             ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
 
-; MB logo
-logo:
+; ***********
+; * MB logo *
+; ***********
+
+; 16x8, stored as plain bitmap, MSB on the left
+
+gfx_logo:
   .db %11000110, %01111110
   .db %11000110, %01100011
   .db %11101110, %01100011
@@ -350,6 +356,32 @@ logo:
   .db %11000110, %01100011
   .db %11000110, %01100011
   .db %11000110, %01111110
+
+; **************************************
+; * Color attributes for splash screen *
+; **************************************
+
+; Packed, 1 color per nybble, MSB on the left
+; Within each nybble, MSB is the brightness attribute
+
+colors:
+  .rept 24
+  .db $99, $99, $99, $99, $99
+  .db $97
+  .db $77, $77, $77, $77
+  .db $72
+  .db $22, $22, $22, $22, $22
+  .endm
+
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                               Variables                               ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
 
 #data	bss
 irq_count:
