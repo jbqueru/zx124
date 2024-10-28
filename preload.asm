@@ -74,9 +74,6 @@
 ; Interrupts off so that we can start messing with things
 	di
 
-; Save IY register, which is reserved by the Spectrum ROM
-	push	iy
-
 ; Save I register since it's a system register that we're modifying
 	ld	a, i			; we can only access I through A
 	push	af			; we must push all of AF to save A
@@ -104,7 +101,7 @@ setirq:
 ; Write interrupt handler
 	ld	h, a
 	ld	l, a			; now HL is $7f7f
-	ld	de, irq
+	ld	de, Irq
 	ld	(hl), $c3		; c3 is opcode for JP
 	inc	l			; HL is $7f80 after that
 	ld	(hl), e			; litte-endian
@@ -195,7 +192,7 @@ NoClear:
   inc hl
   djnz SweepX
   push hl
-  ld hl, irqcount
+  ld hl, irq_count
   ld a, (hl)
 WaitVbl:
   cp (hl)
@@ -258,7 +255,7 @@ SetBg2Done:
   DJNZ SetBgX
 ; Wait for VBL
   PUSH HL
-  LD HL, irqcount
+  LD HL, irq_count
   LD A, (HL)
 SetBgWait:
   CP (HL)
@@ -278,18 +275,16 @@ SetBgWait:
 ; #############################################################################
 ; #############################################################################
 
-; Disable interrupts while we modify them
-	di
+; Disable interrupts while we modify the interrupt setup
+  DI
 ; Restore I register
-	pop	af
-	ld	i, a
-; Restore IY register
-	pop	iy
+  POP AF
+  LD I, A
 ; Enable interrupts back
-	im	1
-	ei
+  IM 1
+  EI
 ; Return to BASIC
-	ret
+  RET
 
 ; #############################################################################
 ; #############################################################################
@@ -301,18 +296,18 @@ SetBgWait:
 ; #############################################################################
 ; #############################################################################
 
-irq:
+Irq:
 ; Save what we use (AF)
-	push	af
-; Increment IRQ count
-	ld	a, (irqcount)
-	inc	a
-	ld	(irqcount), a
+  PUSH AF
+; Increment IRQ co  nt
+  LD A, (irq_count)
+  INC A
+  LD (irq_count), A
 ; Restore what we used (AF)
-	pop	af
-; Terminate interrupt handler
-	ei
-	ret
+  POP AF
+; Exit interrupt handler
+  EI
+  RET
 
 ; Background data
 colors:
@@ -336,5 +331,5 @@ logo:
   .db %11000110, %01111110
 
 #data	bss
-irqcount:
+irq_count:
 	ds	1
