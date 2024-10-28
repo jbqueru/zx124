@@ -32,6 +32,20 @@
 ; #############################################################################
 ; #############################################################################
 
+; This prepares the display before loading the splash screen, so that the
+;         splash screen loads directly with the right colors.
+; * Clear the bitmap while the display is gray.
+;     - first do it by clearing the attributes, which is faster.
+;     - then clear the actual bitmap.
+; * Display MB logo.
+;     - sweep from the top of the screen and change non-logo parts to black.
+; * Set the attributes to prepare for the splash screen.
+;     - sweep from the top of the screen, set all attributes to match the
+;             splash screen (with black background).
+;
+; Note: this code runs while the tape is running, so it can't take too
+;         long or the next tape block with occur before the code is ready
+;         to load it.
 
 ; #############################################################################
 ; #############################################################################
