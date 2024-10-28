@@ -95,14 +95,17 @@
   LD B, L		; L is 0 here (from HL), i.e. loop 256 times
 
 SetupIrq:
-  LD (HL), A		; A is still $7f
+  ; LD A, $7f		; A is still $7f
+  LD (HL), A
   INC L			; we know this loop doesn't cross page boundaries
   DJNZ SetupIrq
   INC H			; L has wrapped back to 0, HL is $8000, make it $8100
-  LD (HL), A		; and A is still $7f
+  ; LD A, $7f		; A is still $7f
+  LD (HL), A
 
 ; Write raw interrupt handler
-  LD H, A		; and A is still $7f at this point
+  ; LD A, $7f		; A is still $7f
+  LD H, A
   LD L, A		; now HL is $7f7f
   LD (HL), opcode(JP nn)
   INC L			; HL is $7f80 after that
