@@ -85,34 +85,38 @@
 ; ************************************************
 
 ; Configure I register
-	ld	a, $7f
-	ld	i, a
+  LD A, $7f		; Set A to $7f, and we'll use it multiple times
+  LD I, A
 
 ; Write interrupt table
-	ld	hl, $8000
-	ld	b, l			; L is 0 here, loop 256 times
-setirq:
-	ld	(hl), a			; A is still $7f
-	inc	l			; we know that we're only touching one page
-	djnz	setirq
-	inc	h			; at this point L has wrapped around, so HL was $8000, now $8100
-	ld	(hl), a			; and A is still $7f
+; Optipmization: instead of incrementing HL for each write, we know we have
+;	256 + 1 writes and that HL starts aligned on a page boundary,
+;	so we increment L, let it wrap around, and increment H
+  LD HL, $8000
+  LD B, L		; L is 0 here (from HL), i.e. loop 256 times
 
-; Write interrupt handler
-	ld	h, a
-	ld	l, a			; now HL is $7f7f
-	ld	de, Irq
-	ld	(hl), $c3		; c3 is opcode for JP
-	inc	l			; HL is $7f80 after that
-	ld	(hl), e			; litte-endian
-	inc	l			; HL is $7f81 after that
-	ld	(hl), d
+SetupIrq:
+  LD (HL), A		; A is still $7f
+  INC L			; we know this loop doesn't cross page boundaries
+  DJNZ SetupIrq
+  INC H			; L has wrapped back to 0, HL is $8000, make it $8100
+  LD (HL), A		; and A is still $7f
+
+; Write raw interrupt handler
+  LD H, A		; and A is still $7f at this point
+  LD L, A		; now HL is $7f7f
+  LD (HL), opcode(JP nn)
+  INC L			; HL is $7f80 after that
+  LD DE, IrqHandler
+  LD (HL), E		; Z80 is litte-endian, start with low byte
+  INC L			; HL is $7f81 after that
+  LD (HL), D		; and the high byte of the address
 
 ; *********************
 ; * Enable interrupts *
 ; *********************
-	im	2
-	ei
+  IM 2
+  EI
 
 ; #############################################################################
 ; #############################################################################
@@ -311,10 +315,10 @@ SetBgWait:
 ; #############################################################################
 ; #############################################################################
 
-Irq:
+IrqHandler:
 ; Save what we use (AF)
   PUSH AF
-; Increment IRQ co  nt
+; Increment IRQ count
   LD A, (irq_count)
   INC A
   LD (irq_count), A
