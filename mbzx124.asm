@@ -25,10 +25,12 @@
 ; Coding style:
 ;	- ASCII
 ;	- hard tabs, 8 characters wide, except in ASCII art
-;	- 120 columns overall
-;	- Standalone block comments in the first 80 columns
-;	- Code-related block comments allowed in the last 80 columns
-;	- Note: rulers at 40, 80 and 120 columns help with source width
+;	- 2 spaces from edge to instruction
+;	- 1 space between instruction and parameter
+;	- 80 columns total
+;	- Per-instruction comments start at 3 tabs for assembly with
+;		short instructions (Z80), 4 tabs for assembly with
+;		long instructions (68000)
 ;
 ;	- Assembler directives are .lowercase with a leading period
 ;	- Mnemomics are lowercase when they typically read like words (move),
