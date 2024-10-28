@@ -72,11 +72,11 @@
 ; ********************************************
 
 ; Interrupts off so that we can start messing with things
-	DI
+  DI
 
 ; Save I register since it's a system register that we're modifying
-	LD	A, I			; we can only access I through A
-	PUSH 	AF			; we must push all of AF to save A
+  LD A, I		; we can only access I through A
+  PUSH AF		; we must push all of AF to save A
 
 ; ************************************************
 ; * Configure our own interrupts                 *
