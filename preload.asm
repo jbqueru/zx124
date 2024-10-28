@@ -53,7 +53,6 @@
 #data	screen, $4000, $1800		; 6 kiB of screen bitmap data
 #data	pixels, $5800, $300		; 0.75 kiB of screen attribute data
 #code	text, $5e00, $400		; some amount of code, right after BASIC
-#data	bss, $6e00, $100		; 0.25kiB of variables
 
 ; #############################################################################
 ; #############################################################################
@@ -211,13 +210,7 @@ SweepClearDone:
   DJNZ SweepColumn
 
 ; Wait for VBL between rows
-  PUSH HL		; Save HL, it's our destination pointer
-  LD HL, irq_count
-  LD A, (HL)		; Read current VBL count
-SweepWaitVbl:
-  CP (HL)		; Did it change yet?
-  JR Z, SweepWaitVbl		; Wait until it changes
-  POP HL		; Restore HL
+  HALT
 
 ; Next row
   DEC C
@@ -276,13 +269,7 @@ SetBg2Done:
 ; Loop within the row
   DJNZ SetBgX
 ; Wait for VBL
-  PUSH HL
-  LD HL, irq_count
-  LD A, (HL)
-SetBgWait:
-  CP (HL)
-  JR Z, SetBgWait
-  POP HL
+  HALT
 ; Loop to next row
   DEC C
   JR NZ, SetBgY
@@ -319,14 +306,6 @@ SetBgWait:
 ; #############################################################################
 
 IrqHandler:
-; Save what we use (AF)
-  PUSH AF
-; Increment IRQ count
-  LD A, (irq_count)
-  INC A
-  LD (irq_count), A
-; Restore what we used (AF)
-  POP AF
 ; Exit interrupt handler
   EI
   RET
@@ -372,17 +351,3 @@ colors:
   .db $72
   .db $22, $22, $22, $22, $22
   .endm
-
-; #############################################################################
-; #############################################################################
-; ###                                                                       ###
-; ###                                                                       ###
-; ###                               Variables                               ###
-; ###                                                                       ###
-; ###                                                                       ###
-; #############################################################################
-; #############################################################################
-
-#data	bss
-irq_count:
-	ds	1
