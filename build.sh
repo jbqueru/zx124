@@ -96,7 +96,7 @@ git bundle create -q out/mbzx124/mbzx124.bundle HEAD main || exit $?
 
 # Prepare a source code snapshot for folks who don't want to use git
 echo '(*)' copying source snapshot
-cp $(ls -1 | grep -v ^out\$) out/src || exit $?
+cp $(ls -1 | grep -v ^out\$ | grep -v \\.rom\$) out/src || exit $?
 echo '(*)'  zipping source snapshot
 (cd out && zip -9 -q mbzx124/src.zip src/*) || exit $?
 
