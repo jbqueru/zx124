@@ -150,6 +150,12 @@ SetIrq:	ld	(hl), c
 	im	2
 	ei
 
+; Wait a second
+  LD B, 50
+Pause:
+  HALT
+  DJNZ Pause
+
 ; ######################
 ; ##                  ##
 ; ## Clear the screen ##
