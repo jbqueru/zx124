@@ -110,11 +110,11 @@
 
 #code slowtext
 
-; ########################
-; ##                    ##
-; ## Entry point, setup ##
-; ##                    ##
-; ########################
+; #################
+; ##             ##
+; ## Basic setup ##
+; ##             ##
+; #################
 
 ; disable interrupts
   DI
@@ -122,7 +122,12 @@
 ; set up stack
   LD SP, 0
 
-; set up IM 2 boilerplate
+; ##########################
+; ##                      ##
+; ## IM 2 interrupt setup ##
+; ##                      ##
+; ##########################
+
 	ld	a, $c3
 	ld	hl, $fdfd
 	ld	(hl), a
