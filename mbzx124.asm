@@ -156,11 +156,16 @@ SetIrq:	ld	(hl), c
 ; ##                  ##
 ; ######################
 
+; Wait for VBL to avoid tearing
   HALT
 
-  XOR A
+; Set black border
+  XOR A			; Cheap way to clear A
   OUT ($fe), A
 
+; Clear attribute block
+; Do it first so that the screen appears all black in a single frame
+  ; XOR A		; A is still 0 here
   LD HL, $5800
   LD B, 3
 ClearAttributes:
@@ -170,6 +175,8 @@ ClearAttributes:
   INC H
   DJNZ ClearAttributes
 
+; Clear screen block
+  ; XOR A		; A is still 0 here
   LD HL, $4000
   LD B, 24
 ClearScreen:
