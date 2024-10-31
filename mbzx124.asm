@@ -150,6 +150,35 @@ SetIrq:	ld	(hl), c
 	im	2
 	ei
 
+; ######################
+; ##                  ##
+; ## Clear the screen ##
+; ##                  ##
+; ######################
+
+  HALT
+
+  XOR A
+  OUT ($fe), A
+
+  LD HL, $5800
+  LD B, 3
+ClearAttributes:
+  LD (HL), A
+  INC L
+  JR NZ, ClearAttributes
+  INC H
+  DJNZ ClearAttributes
+
+  LD HL, $4000
+  LD B, 24
+ClearScreen:
+  LD (HL), A
+  INC L
+  JR NZ, ClearScreen
+  INC H
+  DJNZ ClearScreen
+
 ; ##########################
 ; ##                      ##
 ; ## Display our graphics ##
