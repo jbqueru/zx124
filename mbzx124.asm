@@ -93,8 +93,8 @@
 #code slowtext, $5e00, $2200	; 8.5 kiB of code in ULA RAM, right after BASIC
 
 ; Fast RAM
-#code text, $8000, $7c00	; 31 kiB of code in CPU RAM
-#data bss, $fC00, $1fd		; ~0.5 kB of variables in CPU RAM
+#code text, $8000, $7000	; 28 kiB of code in CPU RAM
+#data bss, $f000, $dfd		; ~3.5 kB of variables in CPU RAM
 #data irqvecs, $fdfd, $104	; ~0.25 kB for IM 2 interrupt handling
 #data stack, $ff01, $ff		; ~0.25 kB of stack
 
@@ -224,25 +224,16 @@ ClearScreen:
 MainLoop:
   HALT
 
-  LD HL, 0
+  LD HL, attbuffer
   LD DE, $5800
   LD BC, 768
   LDIR
 
   LD A, 7
   OUT ($fe), A
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
-  EX (SP), HL
+  LD B, 10
+Wait:
+  DJNZ Wait
   LD A, 0
   OUT ($fe), A
 
@@ -275,3 +266,6 @@ IrqVbl:
 #data	bss
 vbl_count:
 	.ds	1
+
+attbuffer:
+  .ds 768
