@@ -197,25 +197,6 @@ ClearScreen:
   INC H
   DJNZ ClearScreen
 
-; ##########################
-; ##                      ##
-; ## Display our graphics ##
-; ##                      ##
-; ##########################
-
-	ld	a, $a5
-	ld	($4000), a
-	ld	($4200), a
-	ld	($4500), a
-	ld	($4700), a
-	ld	a, 0
-	ld	($4100), a
-	ld	($4300), a
-	ld	($4400), a
-	ld	($4600), a
-	ld	a, $46
-	ld	($5800), a
-
 ; #############################################################################
 ; #############################################################################
 ; ###                                                                       ###
@@ -226,13 +207,46 @@ ClearScreen:
 ; #############################################################################
 ; #############################################################################
 
-; ###############################
-; ##                           ##
-; ## Get stuck in a tight loop ##
-; ##                           ##
-; ###############################
+; Design goal:
+; - various display elements as pseudo-bitplanes in paper attribute
+;	* scrolltext, middle third, probably green because it's brighter
+;	* vertical and horizontal bars
+;	* brightness as a spotlight
+; - some bitmaps, technically that can exist anywhere on screen, using the
+; 	ink color. Top and bottom thirds are good candidates because the
+;	scrolltext isn't there, and because they're easier to use when
+;	racing the beam.
 
-loop:	jp	loop
+; performance-wise, copying the whole attribute table with LDIR takes
+; 768 * 21 = 16128 cycles, out of 69888 for the whole frame.
+
+
+MainLoop:
+  HALT
+
+  LD HL, 0
+  LD DE, $5800
+  LD BC, 768
+  LDIR
+
+  LD A, 7
+  OUT ($fe), A
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  EX (SP), HL
+  LD A, 0
+  OUT ($fe), A
+
+  JR MainLoop
 
 ; #############################################################################
 ; #############################################################################
