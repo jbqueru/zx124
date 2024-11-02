@@ -229,7 +229,7 @@ MainLoop:
   LD BC, 768
   LDIR
 
-  LD A, 7
+  LD A, 6
   OUT ($fe), A
   LD B, 10
 Wait1:
@@ -256,7 +256,7 @@ AddLogo:
   INC HL
   DJNZ AddLogo
 
-  LD A, 7
+  LD A, 5
   OUT ($fe), A
   LD B, 10
 Wait2:
@@ -291,6 +291,14 @@ AddBar3:
   LD (HL), A
   INC HL
   DJNZ AddBar3
+
+  LD A, 4
+  OUT ($fe), A
+  LD B, 10
+Wait3:
+  DJNZ Wait3
+  LD A, 0
+  OUT ($fe), A
 
   LD HL, attbuffer + 2
   LD DE, 31
@@ -348,11 +356,11 @@ AddColumn4:
   ADD HL, DE
   DJNZ AddColumn4
 
-  LD A, 7
+  LD A, 3
   OUT ($fe), A
   LD B, 10
-Wait3:
-  DJNZ Wait3
+Wait4:
+  DJNZ Wait4
   LD A, 0
   OUT ($fe), A
 
