@@ -155,8 +155,8 @@ SetIrq:	ld	(hl), c
 	im	2
 	ei
 
-; Wait a second
-  LD B, 50
+; Wait half a second
+  LD B, 25
 Pause:
   HALT
   DJNZ Pause
