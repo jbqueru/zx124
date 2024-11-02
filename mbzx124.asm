@@ -197,6 +197,8 @@ ClearScreen:
   INC H
   DJNZ ClearScreen
 
+  JP MainLoop
+
 ; #############################################################################
 ; #############################################################################
 ; ###                                                                       ###
@@ -220,6 +222,7 @@ ClearScreen:
 ; performance-wise, copying the whole attribute table with LDIR takes
 ; 768 * 21 = 16128 cycles, out of 69888 for the whole frame.
 
+#code text
 
 MainLoop:
   HALT
