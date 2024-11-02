@@ -232,12 +232,131 @@ MainLoop:
   LD A, 7
   OUT ($fe), A
   LD B, 10
-Wait:
-  DJNZ Wait
+Wait1:
+  DJNZ Wait1
   LD A, 0
   OUT ($fe), A
 
-  JR MainLoop
+  LD HL, attbuffer
+  LD (HL), A
+  LD D, H
+  LD E, L
+  INC DE
+  LD BC, 767
+  LDIR
+
+  LD DE, Logo
+  LD HL, attbuffer + 256
+  LD B, 0
+AddLogo:
+  LD A, (DE)
+  OR (HL)
+  LD (HL), A
+  INC DE
+  INC HL
+  DJNZ AddLogo
+
+  LD A, 7
+  OUT ($fe), A
+  LD B, 10
+Wait2:
+  DJNZ Wait2
+  LD A, 0
+  OUT ($fe), A
+
+
+  LD HL, attbuffer + 64
+  LD B, 64
+AddBar1:
+  LD A, (HL)
+  OR $10
+  LD (HL), A
+  INC HL
+  DJNZ AddBar1
+
+  LD HL, attbuffer + 320
+  LD B, 64
+AddBar2:
+  LD A, (HL)
+  OR $10
+  LD (HL), A
+  INC HL
+  DJNZ AddBar2
+
+  LD HL, attbuffer + 576
+  LD B, 64
+AddBar3:
+  LD A, (HL)
+  OR $10
+  LD (HL), A
+  INC HL
+  DJNZ AddBar3
+
+  LD HL, attbuffer + 2
+  LD DE, 31
+  LD B, 24
+AddColumn1:
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  INC HL
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  ADD HL, DE
+  DJNZ AddColumn1
+
+  LD HL, attbuffer + 10
+  LD DE, 31
+  LD B, 24
+AddColumn2:
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  INC HL
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  ADD HL, DE
+  DJNZ AddColumn2
+
+  LD HL, attbuffer + 18
+  LD DE, 31
+  LD B, 24
+AddColumn3:
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  INC HL
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  ADD HL, DE
+  DJNZ AddColumn3
+
+  LD HL, attbuffer + 26
+  LD DE, 31
+  LD B, 24
+AddColumn4:
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  INC HL
+  LD A, (HL)
+  OR $8
+  LD (HL), A
+  ADD HL, DE
+  DJNZ AddColumn4
+
+  LD A, 7
+  OUT ($fe), A
+  LD B, 10
+Wait3:
+  DJNZ Wait3
+  LD A, 0
+  OUT ($fe), A
+
+  JP MainLoop
 
 ; #############################################################################
 ; #############################################################################
@@ -256,6 +375,33 @@ IrqVbl:
   POP HL
   EI
   RET
+
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                                 Data                                  ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
+
+Logo:
+  .rept 8
+  .db $20, $20, $00, $00, $00, $20, $20, $00
+  .endm
+  .rept 4
+  .db $20, $20, $20, $00, $20, $20, $20, $00
+  .endm
+  .rept 4
+  .db $20, $20, $20, $20, $20, $20, $20, $00
+  .endm
+  .rept 4
+  .db $20, $20, $00, $20, $00, $20, $20, $00
+  .endm
+  .rept 12
+  .db $20, $20, $00, $00, $00, $20, $20, $00
+  .endm
 
 ; ########################################
 ; ##                                    ##
