@@ -419,10 +419,29 @@ VOnlyLoop:
   DJNZ VOnlyLoop	; 13 cycles
   RET
 
-; Alternative with push:
-; (11 * 4 + 13) * 32 = 1824 cycles plus contention
-; (16 * 4 + 16) * 32 = 2560 cycles with contention
+; Draw everything
+; LD (HL), r	= 7 (8)
+; INC HL	= 7 (8)
+; 16 * 8 = 128
+; * 4 per line = 512
 
+; Alternative with push:
+; PUSH rr	= 11 (16)
+; 16 * 4 = 64
+; * 4 per line = 256
+
+; Alternative with direct drawing with IX/IY
+; LD (IX + n), r = 19 (24)
+; LD (IX + n), r = 19 (24)
+; * 4 per line = 48 * 4 = 192
+; + 15 to increment IX/IY = 208
+
+; Directy drawing with HL
+; LD (HL), r = 7 (8)
+; INC HL * 2 = 8 (8)
+; LD (HL), r = 7 (8)
+; ADD L, 6 = 11/12 (12)
+; * 4 per line = 36 * 4 = 144
 
 
 ; #############################################################################
