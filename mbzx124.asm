@@ -282,14 +282,22 @@ MainLoop:
 
   LD HL, TopDone
   PUSH HL
+  LD HL, DrawVLeft7
+  PUSH HL
+  LD HL, DrawVLeft6
+  PUSH HL
+  LD HL, DrawVLeft5
+  PUSH HL
+  LD HL, DrawVLeft4
+  PUSH HL
+  LD HL, DrawVLeft3
+  PUSH HL
+  LD HL, DrawVLeft2
+  PUSH HL
   LD HL, DrawVLeft1
-  .rept 4
   PUSH HL
-  .endm
   LD HL, DrawVLeft0
-  .rept 4
   PUSH HL
-  .endm
 
   LD HL, attributes
   LD DE, 6
@@ -331,6 +339,7 @@ Wait1:
 ; C: contains 8 (color of vertical bars)
 ; DE contains 6 (offset between colums)
 
+; C.B.....
 DrawVLeft0:
   .rept 4
   LD (HL), C
@@ -341,6 +350,7 @@ DrawVLeft0:
   .endm
   RET
 
+; .C.B....
 DrawVLeft1:
   INC L
   .rept 3
@@ -357,6 +367,108 @@ DrawVLeft1:
   LD A, L
   ADD 5
   LD L, A
+  RET
+
+; ..C.B...
+DrawVLeft2:
+  INC L
+  INC L
+  .rept 3
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  ADD HL, DE
+  .endm
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  LD A, L
+  ADD 4
+  LD L, A
+  RET
+
+; ...C.B..
+DrawVLeft3:
+  INC L
+  INC L
+  INC L
+  .rept 3
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  ADD HL, DE
+  .endm
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  INC L
+  INC L
+  INC L
+  RET
+
+; ....C.B.
+DrawVLeft4:
+  LD A, L
+  ADD 4
+  LD L, A
+  .rept 3
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  ADD HL, DE
+  .endm
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  INC L
+  INC L
+  RET
+
+; .....C.B
+DrawVLeft5:
+  LD A, L
+  ADD 5
+  LD L, A
+  .rept 3
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  ADD HL, DE
+  .endm
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  INC L
+  RET
+
+; B.....C.
+DrawVLeft6:
+  .rept 4
+  LD (HL), B
+  ADD HL, DE
+  LD (HL), C
+  INC L
+  INC L
+  .endm
+  RET
+
+; .B.....C
+DrawVLeft7:
+  .rept 4
+  INC L
+  LD (HL), B
+  ADD HL, DE
+  LD (HL), C
+  INC L
+  .endm
   RET
 
 
