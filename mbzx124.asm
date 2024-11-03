@@ -245,20 +245,7 @@ ClearScreen:
 MainLoop:
   HALT
 
-  LD HL, attbuffer
-  LD DE, $5800
-  LD BC, 768
-  LDIR
-
-  LD A, 7
-  OUT ($fe), A
-  LD B, 10
-Wait0:
-  DJNZ Wait0
-  LD A, 0
-  OUT ($fe), A
-
-  CALL DrawVOnly
+  CALL DrawVLeft0
 
   LD A, 6
   OUT ($fe), A
@@ -432,24 +419,6 @@ DrawVLeft0:
   .endm
   RET
 
-; Not counting setup:
-; (13 * 8 + 13) * 32 = 3744 cycles plus contention
-; Assume contention aligns all writes on 8 clocks. 4608 cycles.
-DrawVOnly:
-  LD HL, attributes
-  LD BC, $2008
-  XOR A
-VOnlyLoop:
-  rept 2
-  LD (HL), C		; 7 cycles
-  INC HL		; 6 cycles
-  endm
-  rept 6
-  LD (HL), A		; 7 cycles
-  INC HL		; 6 cycles
-  endm
-  DJNZ VOnlyLoop	; 13 cycles
-  RET
 
 ; Draw everything
 ; LD (HL), r	= 7 (8)
