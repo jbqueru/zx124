@@ -282,8 +282,12 @@ MainLoop:
 
   LD HL, TopDone
   PUSH HL
+  LD HL, DrawVLeft1
+  .rept 4
+  PUSH HL
+  .endm
   LD HL, DrawVLeft0
-  .rept 8
+  .rept 4
   PUSH HL
   .endm
 
@@ -335,6 +339,24 @@ DrawVLeft0:
   LD (HL), B
   ADD HL, DE
   .endm
+  RET
+
+DrawVLeft1:
+  INC L
+  .rept 3
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  ADD HL, DE
+  .endm
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), B
+  LD A, L
+  ADD 5
+  LD L, A
   RET
 
 
