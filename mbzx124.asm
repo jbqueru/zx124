@@ -227,6 +227,19 @@ ClearScreen:
 ; - Make the vertical and horizontal bars move by at most one block per frame.
 ;	That way, they can be drawn incrementally.
 
+; Drawing the vertical and horizontal bars:
+; - Draw line by line
+; - 4 types of line, based on status of horizontal bars:
+;	* off -> off
+;	* off -> on
+;	* on -> off
+;	* on -> on
+; - 3 actions for vertical bars:
+;	* move left
+;	* move right
+;	* no move
+;	* with 8 possible horizontal positions for each (?)
+
 
 #code text		; This code is is non-contended RAM
 MainLoop:
