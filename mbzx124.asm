@@ -407,11 +407,30 @@ Wait4:
 ; #############################################################################
 ; #############################################################################
 
-; ########################
-; ##                    ##
-; ## Vertical bars only ##
-; ##                    ##
-; ########################
+; ################################
+; ##                            ##
+; ## Horizontal bars off -> off ##
+; ##                            ##
+; ################################
+
+; Registers:
+; HL: destination (only register pair through we we can write any register)
+; Need one register with 8 (blue), one with zero (black)
+; Can have a register pair with 6, or a register with 6 plus A clobbered.
+; Note that the high byte of 16-bit is 0, which can be used as our black.
+
+DrawVLeft0:
+  LD HL, attributes
+  LD DE, 6		; loads D with 0 and E with 6
+  LD C, 8
+  .rept 4
+  LD (HL), C
+  INC L
+  INC L
+  LD (HL), D
+  ADD HL, DE
+  .endm
+  RET
 
 ; Not counting setup:
 ; (13 * 8 + 13) * 32 = 3744 cycles plus contention
