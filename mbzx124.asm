@@ -301,7 +301,7 @@ TopDone:
 
   LD A, 1
   OUT ($fe), A
-  LD B, 10
+  LD B, 16
 Wait1:
   DJNZ Wait1
   LD A, 0
