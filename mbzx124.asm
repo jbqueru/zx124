@@ -245,7 +245,55 @@ ClearScreen:
 MainLoop:
   HALT
 
-  CALL DrawVLeft0
+; There's a little bit of trickery here.
+;
+; The first step of the trickery is to compute the list of routines to call
+; before calling them, and to store those on the stack (which means that they
+; need to be in reverse order). That way, there's less back-and-forth
+; between the code that figures out which routines to call and the actual
+; code of those routines, i.e. there's less clobbering of registers.
+;
+; The second step of the trickery is to realize that calling a sequence
+; of subroutines is annoying. It should look like a POP HL / CALL (HL),
+; but that latter instruction doesn't exist, the sequence is instead
+; POP HL / CALL nn / JP (HL), 31 cycles total, with each subroutine finishing
+; with a RET which takes 10 cycles for a total of 41 cycles. It is instead
+; better for each subroutine to jump to the next one directly,
+; i.e. POP HL / JP (HL), which takes 14 cycles. Note that doing things this
+; way also requires some special care so that the last subroutine in the list
+; returns to the caller properly.
+;
+; The third step of the trickery is to realize that the POP HL / JP (HL)
+; is in reality the RET instruction, which is a fancy name for POP PC.
+; That instruction only takes 10 cycles (it's a POP after all) and doesn't
+; clobber any register.
+;
+; The trickery as a whole is therefore to PUSH the continuation address on
+; the stack, followed by the addresses of the various subroutines to call,
+; in reverse order. Calling the first subroutine happens with a RET,
+; each subroutine calls the next with a RET, and the last one returns to
+; the main flow also with a RET (so it doesn't need to be special).
+;
+; Folks working with some RISC processors probably recognize some of those
+; patterns. Also, the approach of mismatching CALL and RET instruction
+; breaks speculative execution on modern processors, and is therefore used
+; to mitigate vulnerabilities that rely on speculative execution, e.g.
+; Meltdown and Spectre.
+
+  LD HL, TopDone
+  PUSH HL
+  LD HL, DrawVLeft0
+  .rept 8
+  PUSH HL
+  .endm
+
+  LD HL, attributes
+  LD DE, 6
+  LD BC, 8
+
+  RET
+
+TopDone:
 
   LD A, 1
   OUT ($fe), A
@@ -273,21 +321,18 @@ Wait1:
 ; ##                            ##
 ; ################################
 
-; Registers:
-; HL: destination (only register pair through we we can write any register)
-; Need one register with 8 (blue), one with zero (black)
-; Can have a register pair with 6, or a register with 6 plus A clobbered.
-; Note that the high byte of 16-bit is 0, which can be used as our black.
+; Parameters:
+; HL: address where to write
+; B: contains 0 (color of background)
+; C: contains 8 (color of vertical bars)
+; DE contains 6 (offset between colums)
 
 DrawVLeft0:
-  LD HL, attributes
-  LD DE, 6		; loads D with 0 and E with 6
-  LD C, 8
   .rept 4
   LD (HL), C
   INC L
   INC L
-  LD (HL), D
+  LD (HL), B
   ADD HL, DE
   .endm
   RET
