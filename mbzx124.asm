@@ -219,11 +219,16 @@ ClearScreen:
 ;	scrolltext isn't there, and because they're easier to use when
 ;	racing the beam.
 
-; performance-wise, copying the whole attribute table with LDIR takes
-; 768 * 21 = 16128 cycles, out of 69888 for the whole frame.
+; Optimization-driven design:
+; - Use the fact that the screen is split into 3 slices, and that code that
+;	doesn't cross between slices can be made simpler. This is true for
+;	both the bitmap and the attributes. In practice, make the attribute
+;	scrolltext fill exactly the middle slice.
+; - Make the vertical and horizontal bars move by at most one block per frame.
+;	That way, they can be drawn incrementally.
 
-#code text
 
+#code text		; This code is is non-contended RAM
 MainLoop:
   HALT
 
@@ -231,6 +236,16 @@ MainLoop:
   LD DE, $5800
   LD BC, 768
   LDIR
+
+  LD A, 7
+  OUT ($fe), A
+  LD B, 10
+Wait0:
+  DJNZ Wait0
+  LD A, 0
+  OUT ($fe), A
+
+  CALL DrawVOnly
 
   LD A, 6
   OUT ($fe), A
@@ -368,6 +383,47 @@ Wait4:
   OUT ($fe), A
 
   JP MainLoop
+
+; #############################################################################
+; #############################################################################
+; ###                                                                       ###
+; ###                                                                       ###
+; ###                          Drawing subroutines                          ###
+; ###                                                                       ###
+; ###                                                                       ###
+; #############################################################################
+; #############################################################################
+
+; ########################
+; ##                    ##
+; ## Vertical bars only ##
+; ##                    ##
+; ########################
+
+; Not counting setup:
+; (13 * 8 + 13) * 32 = 3744 cycles plus contention
+; Assume contention aligns all writes on 8 clocks. 4608 cycles.
+DrawVOnly:
+  LD HL, attributes
+  LD BC, $2008
+  XOR A
+VOnlyLoop:
+  rept 2
+  LD (HL), C		; 7 cycles
+  INC HL		; 6 cycles
+  endm
+  rept 6
+  LD (HL), A		; 7 cycles
+  INC HL		; 6 cycles
+  endm
+  DJNZ VOnlyLoop	; 13 cycles
+  RET
+
+; Alternative with push:
+; (11 * 4 + 13) * 32 = 1824 cycles plus contention
+; (16 * 4 + 16) * 32 = 2560 cycles with contention
+
+
 
 ; #############################################################################
 ; #############################################################################
