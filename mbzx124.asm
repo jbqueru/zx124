@@ -321,6 +321,28 @@ Wait1:
   LD A, 0
   OUT ($fe), A
 
+  LD HL, MidDone
+  PUSH HL
+
+  LD A, (vbars_x)
+  LD E, A
+  LD D, 0
+  LD HL, DrawTextList
+  ADD HL, DE
+  LD E, (HL)
+  INC HL
+  LD D, (HL)
+  .rept 8
+  PUSH DE
+  .endm
+
+  LD HL, $0
+  LD DE, $5900
+  RET
+
+MidDone:
+
+
   JP MainLoop
 
 ; #############################################################################
@@ -480,6 +502,144 @@ DrawVLeft7:
 DrawVList:
 	.dw	DrawVLeft0, DrawVLeft1, DrawVLeft2, DrawVLeft3
 	.dw	DrawVLeft4, DrawVLeft5, DrawVLeft6, DrawVLeft7
+
+TextVBar0:
+  .rept 4
+  .rept 2
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 6
+  LDI
+  .endm
+  .endm
+  RET
+
+TextVBar1:
+  .rept 4
+  LDI
+  .rept 2
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 5
+  LDI
+  .endm
+  .endm
+  RET
+
+TextVBar2:
+  .rept 4
+  .rept 2
+  LDI
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 4
+  LDI
+  .endm
+  .endm
+  RET
+
+TextVBar3:
+  .rept 4
+  .rept 3
+  LDI
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 3
+  LDI
+  .endm
+  .endm
+  RET
+
+TextVBar4:
+  .rept 4
+  .rept 4
+  LDI
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 2
+  LDI
+  .endm
+  .endm
+  RET
+
+TextVBar5:
+  .rept 4
+  .rept 5
+  LDI
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  LDI
+  .endm
+  RET
+
+TextVBar6:
+  .rept 4
+  .rept 6
+  LDI
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .endm
+  RET
+
+TextVBar7:
+  .rept 4
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .rept 6
+  LDI
+  .endm
+  LD A, (HL)
+  OR 8
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  RET
+
+DrawTextList:
+  .dw TextVBar0, TextVBar1, TextVBar2, TextVBar3
+  .dw TextVBar4, TextVBar5, TextVBar6, TextVBar7
 
 ; Draw everything
 ; LD (HL), r	= 7 (8)
