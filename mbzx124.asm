@@ -327,7 +327,7 @@ MainLoop:
   LD HL, TopDone
   PUSH HL
 
-
+; Compute the address of the routine that matches the bars' X coordinate
   LD A, (vbars_x)
   ADD A
   LD E, A
@@ -338,13 +338,16 @@ MainLoop:
   INC HL
   LD D, (HL)
 
+; Write the computed address 8 times on the stack
   .rept 8
   PUSH DE
   .endm
 
+; Prepare the address of the destination
   LD HL, attributes
-  LD DE, 6
-  LD BC, 8
+
+  LD DE, 6		; must be 6, to skip unchanged columns
+  LD BC, $0800		; the colors we write, B then C
 
   RET
 
@@ -407,7 +410,7 @@ Wait2:
 
   LD HL, attributes + $200
   LD DE, 6
-  LD BC, 8
+  LD BC, $0800
 
   RET
 BottomDone:
@@ -446,134 +449,134 @@ Wait3:
 ; C: contains 8 (color of vertical bars)
 ; DE contains 6 (offset between colums)
 
-; C.B.....
+; B.C.....
 DrawVLeft0:
   .rept 4
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   ADD HL, DE
   .endm
   RET
 
-; .C.B....
+; .B.C....
 DrawVLeft1:
   INC L
   .rept 3
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   ADD HL, DE
   .endm
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   LD A, L
   ADD 5
   LD L, A
   RET
 
-; ..C.B...
+; ..B.C...
 DrawVLeft2:
   INC L
   INC L
   .rept 3
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   ADD HL, DE
   .endm
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   LD A, L
   ADD 4
   LD L, A
   RET
 
-; ...C.B..
+; ...B.C..
 DrawVLeft3:
   INC L
   INC L
   INC L
   .rept 3
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   ADD HL, DE
   .endm
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   INC L
   INC L
   INC L
   RET
 
-; ....C.B.
+; ....B.C.
 DrawVLeft4:
   LD A, L
   ADD 4
   LD L, A
   .rept 3
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   ADD HL, DE
   .endm
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   INC L
   INC L
   RET
 
-; .....C.B
+; .....B.C
 DrawVLeft5:
   LD A, L
   ADD 5
   LD L, A
   .rept 3
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   ADD HL, DE
   .endm
-  LD (HL), C
-  INC L
-  INC L
   LD (HL), B
+  INC L
+  INC L
+  LD (HL), C
   INC L
   RET
 
-; B.....C.
+; C.....B.
 DrawVLeft6:
   .rept 4
-  LD (HL), B
-  ADD HL, DE
   LD (HL), C
+  ADD HL, DE
+  LD (HL), B
   INC L
   INC L
   .endm
   RET
 
-; .B.....C
+; .C.....B
 DrawVLeft7:
   .rept 4
   INC L
-  LD (HL), B
-  ADD HL, DE
   LD (HL), C
+  ADD HL, DE
+  LD (HL), B
   INC L
   .endm
   RET
