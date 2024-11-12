@@ -128,34 +128,56 @@
 ; ##                      ##
 ; ##########################
 
-	ld	a, $c3
-	ld	hl, $fdfd
-	ld	(hl), a
-	inc	l
-	ld	de, IrqVbl
-	ld	(hl), e
-	inc	l
-	ld	(hl), d
+; Starting at address $fe00, we have 257 bytes of $fd. That way, with the
+; I register set to $fe, no matter what's on the data bus, the CPU will
+; jump to address $fdfd. In turn, $fdfd contains a JP instruction to the
+; real interrupt handler.
+;
+; It's a nice fit, the JP instruction takes exactly the top 3 of the page
+; at $fd, the $fe page is filled, and the first byte of the $ff page is
+; used, which leaves space for a 255-byte stack in the $ff page.
 
-	ld	c, $fd
-	inc	h
-	inc	l
-	ld	b, l
-SetIrq:	ld	(hl), c
-	inc	l
-	djnz	SetIrq
-	inc	h
-	ld	(hl), c
+  LD HL, $fdfd		; Start to write data at $fdfd
 
-; set up interrupt handler
-	ld	a, $fe
-	ld	i, a
+; Write the JP instruction
+  LD A, opcode(JP nn)
+  LD (HL), A		; Write the JP opcode
+  INC L			; HL is now $fdfe
+  LD DE, IrqVbl
+  LD (HL), E		; Little-endian, write low byte first
+  INC L			; HL is now $fdff
+  LD (HL), D		; write high byte
+  INC HL		; HL is now $fe00
 
-; enable interrupts
-	im	2
-	ei
+; Write the first 256 bytes of the IM 2 vectors
+  LD A, $fd
+  LD B, L		; L is $00, so B is 0, i.e. loop 256 times
+SetIrq:
+  LD (HL), A
+  INC L			; We're staying within the same page
+  DJNZ SetIrq
 
-; Wait half a second
+; Write the last byte of the IM 2 vectors
+  INC H			; HL was $fe00 (L had wrapped around), now $ff00
+  LD (HL), A
+
+; Set up interrupt control vector register
+  LD A, $fe
+  LD I, A
+
+; Enable interrupts in mode 2
+  IM 2
+  EI
+
+; ##########################
+; ##                      ##
+; ## Wait half a second   ##
+; ##                      ##
+; ## To see splash screen ##
+; ## on emulators         ##
+; ##                      ##
+; ##########################
+
   LD B, 25
 Pause:
   HALT
@@ -177,27 +199,27 @@ Pause:
 ; Clear attribute block
 ; Do it first so that the screen appears all black in a single frame
   ; XOR A		; A is still 0 here
-  LD HL, $5800
+  LD HL, attributes
   LD B, 3
 ClearAttributes:
   LD (HL), A
   INC L
-  JR NZ, ClearAttributes
+  JR NZ, ClearAttributes	; Here JP would be faster but bigger
   INC H
   DJNZ ClearAttributes
 
 ; Clear screen block
   ; XOR A		; A is still 0 here
-  LD HL, $4000
+  LD HL, screen
   LD B, 24
 ClearScreen:
   LD (HL), A
   INC L
-  JR NZ, ClearScreen
+  JR NZ, ClearScreen	; Here JP would be faster but bigger
   INC H
   DJNZ ClearScreen
 
-  JP MainLoop
+  JP MainLoop		; The rest of the code is in non-contended RAM
 
 ; #############################################################################
 ; #############################################################################
@@ -243,9 +265,10 @@ ClearScreen:
 
 #code text		; This code is is non-contended RAM
 MainLoop:
-  HALT
+  HALT			; Wait for a VBL
 
-; There's a little bit of trickery here.
+; There's a little bit of trickery here, though I don't think it's as
+; uncommon a technique as it seems.
 ;
 ; The first step of the trickery is to compute the list of routines to call
 ; before calling them, and to store those on the stack (which means that they
@@ -265,14 +288,16 @@ MainLoop:
 ;
 ; The third step of the trickery is to realize that the POP HL / JP (HL)
 ; is in reality the RET instruction, which is a fancy name for POP PC.
-; That instruction only takes 10 cycles (it's a POP after all) and doesn't
-; clobber any register.
+; That instruction only takes 10 cycles (it's a POP after all, so it
+; takes the same duration as a plain POP since the Z80 doesn't prefetch),
+; and doesn't clobber any register.
 ;
 ; The trickery as a whole is therefore to PUSH the continuation address on
 ; the stack, followed by the addresses of the various subroutines to call,
 ; in reverse order. Calling the first subroutine happens with a RET,
 ; each subroutine calls the next with a RET, and the last one returns to
-; the main flow also with a RET (so it doesn't need to be special).
+; the main flow also with a RET (so the last subroutine exits like the other
+; ones and therefore doesn't need anything special).
 ;
 ; Folks working with some RISC processors probably recognize some of those
 ; patterns. Also, the approach of mismatching CALL and RET instruction
