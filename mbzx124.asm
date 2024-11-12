@@ -282,22 +282,28 @@ MainLoop:
 
   LD HL, TopDone
   PUSH HL
-  LD HL, DrawVLeft7
-  PUSH HL
-  LD HL, DrawVLeft6
-  PUSH HL
-  LD HL, DrawVLeft5
-  PUSH HL
-  LD HL, DrawVLeft4
-  PUSH HL
-  LD HL, DrawVLeft3
-  PUSH HL
-  LD HL, DrawVLeft2
-  PUSH HL
-  LD HL, DrawVLeft1
-  PUSH HL
-  LD HL, DrawVLeft0
-  PUSH HL
+
+  LD A, (vbars_x)
+  SUB 2
+  AND 14
+  LD (vbars_x), A
+  LD E, A
+  LD D, 0
+  LD HL, DrawVList
+  ADD HL, DE
+  LD E, (HL)
+  INC HL
+  LD D, (HL)
+
+  PUSH DE
+  PUSH DE
+  PUSH DE
+  PUSH DE
+  PUSH DE
+  PUSH DE
+  PUSH DE
+  PUSH DE
+
 
   LD HL, attributes
   LD DE, 6
@@ -471,6 +477,9 @@ DrawVLeft7:
   .endm
   RET
 
+DrawVList:
+	.dw	DrawVLeft0, DrawVLeft1, DrawVLeft2, DrawVLeft3
+	.dw	DrawVLeft4, DrawVLeft5, DrawVLeft6, DrawVLeft7
 
 ; Draw everything
 ; LD (HL), r	= 7 (8)
@@ -550,4 +559,7 @@ Logo:
 
 #data	bss
 vbl_count:
+	.ds	1
+
+vbars_x:
 	.ds	1
