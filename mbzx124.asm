@@ -295,15 +295,9 @@ MainLoop:
   INC HL
   LD D, (HL)
 
+  .rept 8
   PUSH DE
-  PUSH DE
-  PUSH DE
-  PUSH DE
-  PUSH DE
-  PUSH DE
-  PUSH DE
-  PUSH DE
-
+  .endm
 
   LD HL, attributes
   LD DE, 6
@@ -341,6 +335,46 @@ Wait1:
   RET
 
 MidDone:
+
+  LD A, 2
+  OUT ($fe), A
+  LD B, 16
+Wait2:
+  DJNZ Wait2
+  LD A, 0
+  OUT ($fe), A
+
+  LD HL, BottomDone
+  PUSH HL
+
+  LD A, (vbars_x)
+  LD E, A
+  LD D, 0
+  LD HL, DrawVList
+  ADD HL, DE
+  LD E, (HL)
+  INC HL
+  LD D, (HL)
+
+  .rept 8
+  PUSH DE
+  .endm
+
+  LD HL, attributes + $200
+  LD DE, 6
+  LD BC, 8
+
+  RET
+BottomDone:
+
+  LD A, 3
+  OUT ($fe), A
+  LD B, 16
+Wait3:
+  DJNZ Wait3
+  LD A, 0
+  OUT ($fe), A
+
 
 
   JP MainLoop
