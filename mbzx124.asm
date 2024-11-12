@@ -343,16 +343,18 @@ MainLoop:
   PUSH DE
   .endm
 
-; Prepare the address of the destination
-  LD HL, attributes
+; Prepare parameters for subroutines
+  LD HL, attributes	; Destination address
 
   LD DE, 6		; must be 6, to skip unchanged columns
   LD BC, $0800		; the colors we write, B then C
 
+; Jump to the first routine
   RET
 
 TopDone:
 
+; Draw a timing line
   LD A, 1
   OUT ($fe), A
   LD B, 16
@@ -361,9 +363,17 @@ Wait1:
   LD A, 0
   OUT ($fe), A
 
-  LD HL, MidDone
+; #########################################
+; ##                                     ##
+; ## Draw the middle third of the screen ##
+; ##                                     ##
+; #########################################
+
+; Push the address we'll jump to once we're done
+  LD HL, MiddleDone
   PUSH HL
 
+; Compute the address of the routine that matches the bars' X coordinate
   LD A, (vbars_x)
   ADD A
   LD E, A
@@ -373,16 +383,22 @@ Wait1:
   LD E, (HL)
   INC HL
   LD D, (HL)
+
+; Write the computed address 8 times on the stack
   .rept 8
   PUSH DE
   .endm
 
-  LD HL, Logo
-  LD DE, $5900
+; Prepare parameters for subroutines
+  LD HL, Logo		; Source address
+  LD DE, attributes + $100 ; Destination address
+
+; Jump to the first routine
   RET
 
-MidDone:
+MiddleDone:
 
+; Draw a timing line
   LD A, 2
   OUT ($fe), A
   LD B, 16
@@ -390,6 +406,12 @@ Wait2:
   DJNZ Wait2
   LD A, 0
   OUT ($fe), A
+
+; #########################################
+; ##                                     ##
+; ## Draw the bottom third of the screen ##
+; ##                                     ##
+; #########################################
 
   LD HL, BottomDone
   PUSH HL
