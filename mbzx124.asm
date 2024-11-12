@@ -313,8 +313,8 @@ MainLoop:
 
   LD HL, vbars_x
   LD A, (HL)
-  SUB 2
-  AND 14
+  DEC A
+  AND 7
   LD (HL), A
 
 ; ######################################
@@ -329,6 +329,7 @@ MainLoop:
 
 
   LD A, (vbars_x)
+  ADD A
   LD E, A
   LD D, 0
   LD HL, DrawVList
@@ -361,6 +362,7 @@ Wait1:
   PUSH HL
 
   LD A, (vbars_x)
+  ADD A
   LD E, A
   LD D, 0
   LD HL, DrawTextList
@@ -390,6 +392,7 @@ Wait2:
   PUSH HL
 
   LD A, (vbars_x)
+  ADD A
   LD E, A
   LD D, 0
   LD HL, DrawVList
