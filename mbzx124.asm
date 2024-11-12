@@ -198,7 +198,7 @@ Pause:
 
 ; Clear attribute block
 ; Do it first so that the screen appears all black in a single frame
-  ; XOR A		; A is still 0 here
+  XOR A
   LD HL, attributes
   LD B, 3
 ClearAttributes:
@@ -209,7 +209,7 @@ ClearAttributes:
   DJNZ ClearAttributes
 
 ; Clear screen block
-  ; XOR A		; A is still 0 here
+  XOR A
   LD HL, screen
   LD B, 24
 ClearScreen:
