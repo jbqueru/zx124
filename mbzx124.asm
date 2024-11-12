@@ -330,7 +330,7 @@ Wait1:
   PUSH DE
   .endm
 
-  LD HL, $0
+  LD HL, Logo
   LD DE, $5900
   RET
 
