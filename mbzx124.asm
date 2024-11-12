@@ -305,13 +305,30 @@ MainLoop:
 ; to mitigate vulnerabilities that rely on speculative execution, e.g.
 ; Meltdown and Spectre.
 
+; ################################
+; ##                            ##
+; ## Update display coordinates ##
+; ##                            ##
+; ################################
+
+  LD HL, vbars_x
+  LD A, (HL)
+  SUB 2
+  AND 14
+  LD (HL), A
+
+; ######################################
+; ##                                  ##
+; ## Draw the top third of the screen ##
+; ##                                  ##
+; ######################################
+
+; Push the address we'll jump to once we're done
   LD HL, TopDone
   PUSH HL
 
+
   LD A, (vbars_x)
-  SUB 2
-  AND 14
-  LD (vbars_x), A
   LD E, A
   LD D, 0
   LD HL, DrawVList
