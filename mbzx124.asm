@@ -385,9 +385,12 @@ Wait1:
   LD D, (HL)
 
 ; Write the computed address 8 times on the stack
-  .rept 8
+  .rept 7
   PUSH DE
   .endm
+
+  LD HL, TextHVBar0
+  PUSH HL
 
 ; Prepare parameters for subroutines
   LD HL, Logo		; Source address
@@ -744,6 +747,26 @@ TextVBar7:
 DrawTextList:
   .dw TextVBar0, TextVBar1, TextVBar2, TextVBar3
   .dw TextVBar4, TextVBar5, TextVBar6, TextVBar7
+
+TextHVBar0:
+  .rept 4
+  .rept 2
+  LD A, (HL)
+  OR $18
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 6
+  LD A, (HL)
+  OR $10
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .endm
+  RET
+
 
 ; Draw everything
 ; LD (HL), r	= 7 (8)
