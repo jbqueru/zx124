@@ -79,7 +79,7 @@
 
 #data screen, $4000, $1800	; 6 kiB of screen bitmap data
 #data colors, $5800, $300	; 0.75 kiB of screen attribute data
-#code text, $5e00, $24A		; some amount of code, right after BASIC
+#code text, $5e00, $24a		; some amount of code, right after BASIC
 				;   this is adjusted to match the build
 
 ; #############################################################################
