@@ -80,7 +80,17 @@ Licensees of the a whole demo or of the whole repository may apply
 the same exception to their modified version, or may decide to
 remove that exception entirely.
 
-## Privacy (including GDPR)
+## Privacy
+
+This code doesn't have any privacy implications, and has been
+written without any thought about the privacy implications
+that might arise from any changes made to it.
+
+_Let's be honest, if using a demo on such an old computer,
+even emulated, causes significant privacy concerns or in
+fact any privacy concerns, the world is coming to an end._
+
+### Specific privacy aspects for GDPR (EU 2016/679)
 
 None of the code in this project processes any personal data
 in any way. It does not collect, record, organize, structure,
@@ -100,18 +110,31 @@ any natural person. It neither analyzes nor predicts performance
 at work, economic situation, health, personal preferences,
 interests, reliability, behavior, location, and movements.
 
-_Let's be honest, if using a demo on such an old computer,
-even emulated, causes significant privacy concerns or in
-fact any privacy concerns, the world is coming to an end._
+_Don't use this code where GDPR might come into scope.
+Seriously. Don't. Just don't.
 
-## Security (including CRA)
+## Security
+
+Generally speaking, the code in this project is inappropriate
+for any application where security is a concern of any kind.
+
+_Don't even think of using any code from this project for
+anything remotely security-sensitive. That would be awfully
+stupid._
+
+_In the context of the Sinclair ZX Spectrum, the hardware
+is far too primitive to support any notion of security at
+the assembly level, and assembly as a language is as far
+from being secure by default as can be._
+
+### Specific security aspects for CRA (EU 2022/454)
 
 None of the code in this project involves any direct or indirect
 logical or physical data connection to a device or network.
 
 Also, all of the code in this project is provided under a free
 and open source license, in a non-commercial manner. It is
-developed, maintained, and distributed openly. As of October
+developed, maintained, and distributed openly. As of November
 2024, no price has been charged for any of the code in this
 project, nor have any donations been accepted in connection
 with this project. The author has no intention of charging a
@@ -120,10 +143,23 @@ but acknowledge that, in extreme situations, donations of
 hardware or of access to hardware might facilitate development,
 without any intent to make a profit.
 
-_Don't even think of using any code from this project for
-anything remotely security-sensitive. That would be awfully
-stupid.
-In the context of the ZX Sprectrum, there are no security
-features in place.
-Also, the code is developed in assembly language, which
-lacks the modern language features that help security._
+_This code is intended to be used in isolated environments.
+If you build a connected product from this code, the security
+implications are on you. You've been warned._
+
+### Specific security aspects for NIS2 (EU 2022/2555)
+
+The intended use for this code is not a critical application.
+This project has been developed without any attention to the
+practices mandated by NIS2 for critical applications.
+It is not appropriate as-is for any critical application, and,
+by its very nature, no amount of paying and auditing will
+ever make it reach a point where it is appropriate.
+The author will immediately dismiss any request to reach the
+standards set by NIS2.
+
+_Don't even think about it. Seriously. I'm not kidding. If you
+are even considering using this code or any similar code for any
+critical project, you should expect to get fired.
+I cannot understate how grossly inappropriate this code is for
+anything that might actually matter._
