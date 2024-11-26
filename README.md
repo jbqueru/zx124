@@ -5,6 +5,22 @@ Explorations in ZX Spectrum programming
 This is an attempt by Djaybee from the MegaBusters to write
 some form of demo for ZX Spectrum. 
 
+# Architecture
+
+## Separation into files
+
+There's a loader file, `loader.bas`, written in BASIC, which
+then loads binary files, in order:
+
+`preload.asm` clears the screen and sets up the screen attributes
+before loading the splash screen. The attributes are set first
+such that the splash screen is loaded directly with the right colors.
+
+`splash.bin` is the splash screen itself, directly in the format of
+the framebuffer bitmap.
+
+`mbzx124.asm` is the main code, loaded after the splash screen.
+
 # Tooling and build
 
 ## Tools used
@@ -23,10 +39,7 @@ This code is being developed with the following tools:
 		emulator](https://github.com/TomHarte/CLK)
 * As a development environment:
 	+ [Linux Mint](https://linuxmint.com/)
-	+ The [`Sublime` text editor](https://www.sublimetext.com/)
-		- with the [`Z80 Assembly` syntax
-			highlighter](https://packagecontrol.io/packages/Z80%20Assembly)
-		- with `"detect_indentation": false` and `"tab_size": 8`
+	+ The [`Kate` text editor](https://kate-editor.org/)
 
 ## Build process
 
