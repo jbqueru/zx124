@@ -339,9 +339,12 @@ MainLoop:
   LD D, (HL)
 
 ; Write the computed address 8 times on the stack
-  .rept 8
+  .rept 7
   PUSH DE
   .endm
+
+  LD HL, DrawHVLeft0
+  PUSH DE
 
 ; Prepare parameters for subroutines
   LD HL, attributes	; Destination address
@@ -609,6 +612,21 @@ DrawVLeft7:
 DrawVList:
 	.dw	DrawVLeft0, DrawVLeft1, DrawVLeft2, DrawVLeft3
 	.dw	DrawVLeft4, DrawVLeft5, DrawVLeft6, DrawVLeft7
+
+; BBCCCCCC
+DrawHVLeft0:
+  .rept 4
+  .rept 2
+  LD (HL), B
+  INC L
+  .endm
+  .rept 6
+  LD (HL), C
+  INC L
+  .endm
+  .endm
+  RET
+
 
 TextVBar0:
   .rept 4
