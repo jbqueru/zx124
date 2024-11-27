@@ -39,8 +39,17 @@ rm -rf out || exit $?
 ##################################################
 
 echo '(*)' creating build directories
+mkdir -p out/bin || exit $?
+mkdir -p out/inc || exit $?
 mkdir -p out/obj || exit $?
 mkdir -p out/tap || exit $?
+
+# Convert from ST YM2149F to Spectrum AY-3-8192
+echo '(*)' compiling audio processing tool
+cc tune_audio.c -o out/bin/tune_audio || exit $?
+
+echo '(*)' processing audio
+out/bin/tune_audio || exit $?
 
 # Tokenize BASIC loader, autostart at line 1
 echo '(*)' tokenizing BASIC
@@ -59,11 +68,11 @@ echo '(*)' generating splash screen
 dd if=/dev/random of=out/obj/splash.bin bs=256 count=24 || exit $?
 bin2tap out/obj/splash.bin out/obj/splash.tap -a 0x4000 || exit $?
 
-# Assemble the actual code
+# Assemble the main code
 echo '(*)' assembling main code
 zasm --opcodes --labels --cycles mbzx124.asm -o out/obj/mbzx124.bin || exit $?
 
-# Package the machine code into a tap image
+# Package the main code into a tap image
 echo '(*)' packaging main code
 bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x5e00 || exit $?
 

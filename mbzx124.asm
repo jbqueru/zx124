@@ -881,7 +881,7 @@ Logo:
   .endm
 
 Music:
-  .incbin "AREGDUMP.BIN"
+  .incbin "out/inc/zxregdump.bin"
 MusicEnd:
 
 ; ########################################
