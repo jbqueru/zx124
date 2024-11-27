@@ -219,6 +219,10 @@ ClearScreen:
   INC H
   DJNZ ClearScreen
 
+; Set up music pointer
+  LD HL, Music
+  LD (music_read), HL
+
   JP MainLoop		; The rest of the code is in non-contended RAM
 
 ; #############################################################################
@@ -451,7 +455,19 @@ Wait3:
   LD A, 0
   OUT ($fe), A
 
-
+  LD HL, (music_read)
+  LD A, 13
+OneReg:
+  LD BC, $fffd
+  OUT (BC), A
+  LD E, (HL)
+  LD BC, $bffd
+  OUT (BC), E
+  INC HL
+  DEC A
+  CP 255
+  JR NZ, OneReg
+  LD (music_read), HL
 
   JP MainLoop
 
@@ -856,6 +872,10 @@ Logo:
   .db $20, $20, $00, $00, $00, $20, $20, $00
   .endm
 
+Music:
+  .incbin "AREGDUMP.BIN"
+MusicEnd:
+
 ; ########################################
 ; ##                                    ##
 ; ## Boilerplate for interrupt handling ##
@@ -868,3 +888,6 @@ vbl_count:
 
 vbars_x:
 	.ds	1
+
+music_read:
+	.ds	2
