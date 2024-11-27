@@ -467,6 +467,14 @@ OneReg:
   DEC A
   CP 255
   JR NZ, OneReg
+  LD A, L
+  CP MusicEnd & 255
+  JR NZ, InMusic
+  LD A, H
+  CP MusicEnd >> 8
+  JR NZ, InMusic
+  LD HL, Music
+  InMusic:
   LD (music_read), HL
 
   JP MainLoop
