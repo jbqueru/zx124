@@ -339,12 +339,11 @@ MainLoop:
   LD D, (HL)
 
 ; Write the computed address 8 times on the stack
-  .rept 7
-  PUSH DE
+  .rept 8
+;  PUSH DE
   .endm
 
   LD HL, DrawHVLeft0
-  PUSH DE
 
 ; Prepare parameters for subroutines
   LD HL, attributes	; Destination address
@@ -433,7 +432,7 @@ Wait2:
   LD D, (HL)
 
   .rept 8
-  PUSH DE
+;  PUSH DE
   .endm
 
   LD HL, attributes + $200
