@@ -391,7 +391,7 @@ Wait1:
   PUSH DE
   .endm
 
-  LD HL, TextHVBar0
+  LD HL, TextHVBar01
   PUSH HL
 
 ; Prepare parameters for subroutines
@@ -632,14 +632,15 @@ DrawHVLeft0:
 ; ##                                    ##
 ; ########################################
 
-; Parameters:
-; ABC: clobbered
+; Parameters/return:
+; ABC: ignored/clobbered
 ; DE: destination address
 ; HL: source address
 
 ; ****************************************
 ; ** Vertical bars at positions 0 and 1 **
 ; ****************************************
+
 TextVBar01:
   .rept 4
   .rept 2
@@ -658,6 +659,7 @@ TextVBar01:
 ; ****************************************
 ; ** Vertical bars at positions 1 and 2 **
 ; ****************************************
+
 TextVBar12:
   .rept 4
   LDI
@@ -677,6 +679,7 @@ TextVBar12:
 ; ****************************************
 ; ** Vertical bars at positions 2 and 3 **
 ; ****************************************
+
 TextVBar23:
   .rept 4
   .rept 2
@@ -698,6 +701,7 @@ TextVBar23:
 ; ****************************************
 ; ** Vertical bars at positions 3 and 4 **
 ; ****************************************
+
 TextVBar34:
   .rept 4
   .rept 3
@@ -719,6 +723,7 @@ TextVBar34:
 ; ****************************************
 ; ** Vertical bars at positions 4 and 5 **
 ; ****************************************
+
 TextVBar45:
   .rept 4
   .rept 4
@@ -740,6 +745,7 @@ TextVBar45:
 ; ****************************************
 ; ** Vertical bars at positions 5 and 6 **
 ; ****************************************
+
 TextVBar56:
   .rept 4
   .rept 5
@@ -759,6 +765,7 @@ TextVBar56:
 ; ****************************************
 ; ** Vertical bars at positions 6 and 7 **
 ; ****************************************
+
 TextVBar67:
   .rept 4
   .rept 6
@@ -777,6 +784,7 @@ TextVBar67:
 ; ****************************************
 ; ** Vertical bars at positions 7 and 0 **
 ; ****************************************
+
 TextVBar70:
   .rept 4
   LD A, (HL)
@@ -799,18 +807,34 @@ DrawTextList:
   .dw TextVBar01, TextVBar12, TextVBar23, TextVBar34
   .dw TextVBar45, TextVBar56, TextVBar67, TextVBar70
 
-TextHVBar0:
+; ########################################
+; ##                                    ##
+; ## Scrolltext without horizontal bars ##
+; ##                                    ##
+; ########################################
+
+; Parameters/return:
+; ABC: ignored/clobbered
+; DE: destination address
+; HL: source address
+
+; ****************************************
+; ** Vertical bars at positions 0 and 1 **
+; ****************************************
+
+TextHVBar01:
+  LD BC, $1810
   .rept 4
   .rept 2
   LD A, (HL)
-  OR $18
+  OR B
   LD (DE), A
   INC L
   INC E
   .endm
   .rept 6
   LD A, (HL)
-  OR $10
+  OR C
   LD (DE), A
   INC L
   INC E
@@ -818,6 +842,207 @@ TextHVBar0:
   .endm
   RET
 
+; ****************************************
+; ** Vertical bars at positions 1 and 2 **
+; ****************************************
+
+TextHVBar12:
+  LD BC, $1810
+  .rept 4
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .rept 2
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 5
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .endm
+  RET
+
+; ****************************************
+; ** Vertical bars at positions 2 and 3 **
+; ****************************************
+
+TextHVBar23:
+  LD BC, $1810
+  .rept 4
+  .rept 2
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 4
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .endm
+  RET
+
+; ****************************************
+; ** Vertical bars at positions 3 and 4 **
+; ****************************************
+
+TextHVBar34:
+  LD BC, $1810
+  .rept 4
+  .rept 3
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 3
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .endm
+  RET
+
+; ****************************************
+; ** Vertical bars at positions 4 and 5 **
+; ****************************************
+
+TextHVBar45:
+  LD BC, $1810
+  .rept 4
+  .rept 4
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .endm
+  RET
+
+; ****************************************
+; ** Vertical bars at positions 5 and 6 **
+; ****************************************
+
+TextHVBar56:
+  LD BC, $1810
+  .rept 4
+  .rept 5
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  RET
+
+; ****************************************
+; ** Vertical bars at positions 6 and 7 **
+; ****************************************
+
+TextHVBar67:
+  LD BC, $1810
+  .rept 4
+  .rept 6
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .rept 2
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  .endm
+  RET
+
+; ****************************************
+; ** Vertical bars at positions 7 and 0 **
+; ****************************************
+
+TextHVBar70:
+  LD BC, $1810
+  .rept 4
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .rept 6
+  LD A, (HL)
+  OR C
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  LD A, (HL)
+  OR B
+  LD (DE), A
+  INC L
+  INC E
+  .endm
+  RET
 
 ; Draw everything
 ; LD (HL), r	= 7 (8)
