@@ -626,8 +626,21 @@ DrawHVLeft0:
   .endm
   RET
 
+; ########################################
+; ##                                    ##
+; ## Scrolltext without horizontal bars ##
+; ##                                    ##
+; ########################################
 
-TextVBar0:
+; Parameters:
+; ABC: clobbered
+; DE: destination address
+; HL: source address
+
+; ****************************************
+; ** Vertical bars at positions 0 and 1 **
+; ****************************************
+TextVBar01:
   .rept 4
   .rept 2
   LD A, (HL)
@@ -642,7 +655,10 @@ TextVBar0:
   .endm
   RET
 
-TextVBar1:
+; ****************************************
+; ** Vertical bars at positions 1 and 2 **
+; ****************************************
+TextVBar12:
   .rept 4
   LDI
   .rept 2
@@ -658,7 +674,10 @@ TextVBar1:
   .endm
   RET
 
-TextVBar2:
+; ****************************************
+; ** Vertical bars at positions 2 and 3 **
+; ****************************************
+TextVBar23:
   .rept 4
   .rept 2
   LDI
@@ -676,7 +695,10 @@ TextVBar2:
   .endm
   RET
 
-TextVBar3:
+; ****************************************
+; ** Vertical bars at positions 3 and 4 **
+; ****************************************
+TextVBar34:
   .rept 4
   .rept 3
   LDI
@@ -694,7 +716,10 @@ TextVBar3:
   .endm
   RET
 
-TextVBar4:
+; ****************************************
+; ** Vertical bars at positions 4 and 5 **
+; ****************************************
+TextVBar45:
   .rept 4
   .rept 4
   LDI
@@ -712,7 +737,10 @@ TextVBar4:
   .endm
   RET
 
-TextVBar5:
+; ****************************************
+; ** Vertical bars at positions 5 and 6 **
+; ****************************************
+TextVBar56:
   .rept 4
   .rept 5
   LDI
@@ -728,7 +756,10 @@ TextVBar5:
   .endm
   RET
 
-TextVBar6:
+; ****************************************
+; ** Vertical bars at positions 6 and 7 **
+; ****************************************
+TextVBar67:
   .rept 4
   .rept 6
   LDI
@@ -743,7 +774,10 @@ TextVBar6:
   .endm
   RET
 
-TextVBar7:
+; ****************************************
+; ** Vertical bars at positions 7 and 0 **
+; ****************************************
+TextVBar70:
   .rept 4
   LD A, (HL)
   OR 8
@@ -762,8 +796,8 @@ TextVBar7:
   RET
 
 DrawTextList:
-  .dw TextVBar0, TextVBar1, TextVBar2, TextVBar3
-  .dw TextVBar4, TextVBar5, TextVBar6, TextVBar7
+  .dw TextVBar01, TextVBar12, TextVBar23, TextVBar34
+  .dw TextVBar45, TextVBar56, TextVBar67, TextVBar70
 
 TextHVBar0:
   .rept 4
