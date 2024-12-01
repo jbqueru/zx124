@@ -52,12 +52,12 @@ zasm --opcodes --labels --cycles preload.asm -o out/obj/preload.bin || exit $?
 
 # Package the preloader binary into a tap image
 echo '(*)' packaging preloader
-bin2tap out/obj/preload.bin out/obj/preload.tap -a 0x5e00 || exit $?
+(cd out/obj && bin2tap preload.bin preload.tap -a 0x5e00) || exit $?
 
 # Prepare the splash screen
 echo '(*)' generating splash screen
 dd if=/dev/random of=out/obj/splash.bin bs=256 count=24 || exit $?
-bin2tap out/obj/splash.bin out/obj/splash.tap -a 0x4000 || exit $?
+(cd out/obj && bin2tap splash.bin splash.tap -a 0x4000) || exit $?
 
 # Assemble the actual code
 echo '(*)' assembling main code
@@ -65,7 +65,7 @@ zasm --opcodes --labels --cycles mbzx124.asm -o out/obj/mbzx124.bin || exit $?
 
 # Package the machine code into a tap image
 echo '(*)' packaging main code
-bin2tap out/obj/mbzx124.bin out/obj/code.tap -a 0x5e00 || exit $?
+(cd out/obj && bin2tap mbzx124.bin code.tap -a 0x5e00) || exit $?
 
 # Put the whole tape image together, loader + binary
 echo '(*)' preparing tape image
