@@ -378,6 +378,7 @@ Wait1:
 ; Compute the address of the routine that matches the bars' X coordinate
   LD A, (vbars_x)
   ADD A
+  ADD A
   LD E, A
   LD D, 0
   LD HL, DrawTextList
@@ -385,14 +386,18 @@ Wait1:
   LD E, (HL)
   INC HL
   LD D, (HL)
+  INC HL
+  LD C, (HL)
+  INC HL
+  LD B, (HL)
 
 ; Write the computed address 8 times on the stack
-  .rept 7
+  .rept 6
   PUSH DE
   .endm
 
-  LD HL, TextHVBar01
-  PUSH HL
+  PUSH BC
+  PUSH BC
 
 ; Prepare parameters for subroutines
   LD HL, Logo		; Source address
@@ -803,10 +808,6 @@ TextVBar70:
   .endm
   RET
 
-DrawTextList:
-  .dw TextVBar01, TextVBar12, TextVBar23, TextVBar34
-  .dw TextVBar45, TextVBar56, TextVBar67, TextVBar70
-
 ; ########################################
 ; ##                                    ##
 ; ## Scrolltext without horizontal bars ##
@@ -1043,6 +1044,16 @@ TextHVBar70:
   INC E
   .endm
   RET
+
+  DrawTextList:
+  .dw TextVBar01, TextHVBar01
+  .dw TextVBar12, TextHVBar12
+  .dw TextVBar23, TextHVBar23
+  .dw TextVBar34, TextHVBar34
+  .dw TextVBar45, TextHVBar45
+  .dw TextVBar56, TextHVBar56
+  .dw TextVBar67, TextHVBar67
+  .dw TextVBar70, TextHVBar70
 
 ; Draw everything
 ; LD (HL), r	= 7 (8)
