@@ -315,6 +315,12 @@ MainLoop:
   LD A, (HL)
   DEC A
   AND 7
+;  LD (HL), A
+
+  LD HL, text_x
+  LD A, (HL)
+  INC A
+  AND 31
   LD (HL), A
 
 ; ######################################
@@ -406,6 +412,8 @@ Wait1:
 
 ; Prepare parameters for subroutines
   LD HL, Logo		; Source address
+  LD A, (text_x)
+  LD L, A
   LD DE, attributes + $100 ; Destination address
 
 ; Jump to the first routine
@@ -1201,4 +1209,7 @@ vbl_count:
 	.ds	1
 
 vbars_x:
+	.ds	1
+
+text_x:
 	.ds	1
