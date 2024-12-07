@@ -502,10 +502,25 @@ Wait3:
   LD A, 0
   OUT ($fe), A
 
-  LD HL, SpriteWilly + 0
-  LD DE, $5063
+  LD HL, SpriteWilly + 16
+  LD DE, $5000
+  LD A, 30
+  ADD E
+  LD E, A
+  LD A, 6
+  ADD A
+  ADD A
+  ADD A
+  ADD A
+  ADD A
+  ADD E
+  LD E, A
+
+  LD C, 2
+SpriteDrawX:
+  PUSH DE
   LD B, 2
-SpriteDraw:
+SpriteDrawY:
   .rept 8
   LD A, (HL)
   INC L
@@ -518,7 +533,11 @@ SpriteDraw:
   LD A, D
   SUB 8
   LD D, A
-  DJNZ SpriteDraw
+  DJNZ SpriteDrawY
+  POP DE
+  INC E
+  DEC C
+  JR NZ, SpriteDrawX
 
   JP MainLoop
 
