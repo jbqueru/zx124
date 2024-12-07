@@ -502,8 +502,10 @@ Wait3:
   LD A, 0
   OUT ($fe), A
 
-  LD HL, SpriteWilly
+  LD HL, SpriteWilly + 0
   LD DE, $5063
+  LD B, 2
+SpriteDraw:
   .rept 8
   LD A, (HL)
   INC L
@@ -516,12 +518,7 @@ Wait3:
   LD A, D
   SUB 8
   LD D, A
-  .rept 8
-  LD A, (HL)
-  INC L
-  LD (DE), A
-  INC D
-  .endm
+  DJNZ SpriteDraw
 
   JP MainLoop
 
@@ -1243,6 +1240,7 @@ SpriteWilly:
   .db %00111100
   .db %00011000
   .db %00111100
+
   .db %01110110
   .db %01110110
   .db %01110110
@@ -1251,6 +1249,43 @@ SpriteWilly:
   .db %00011000
   .db %00011000
   .db %00111000
+
+
+  .db %00000011
+  .db %00000011
+  .db %00000111
+  .db %00000010
+  .db %00000111
+  .db %00000011
+  .db %00000001
+  .db %00000011
+
+  .db %00000111
+  .db %00001111
+  .db %00011111
+  .db %00011011
+  .db %00000111
+  .db %00010110
+  .db %00011100
+  .db %00001100
+
+  .db %11000000
+  .db %11000000
+  .db %11100000
+  .db %11000000
+  .db %11000000
+  .db %11000000
+  .db %10000000
+  .db %11000000
+
+  .db %11100000
+  .db %11110000
+  .db %11111000
+  .db %11011000
+  .db %11000000
+  .db %11100000
+  .db %00110000
+  .db %01110000
 
   .org $ee00
 Logo:
