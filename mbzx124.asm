@@ -219,6 +219,40 @@ ClearScreen:
   INC H
   DJNZ ClearScreen
 
+; Set attributes
+  LD HL, attributes
+  LD D, 3
+SetScreen0:
+  LD B, 8
+SetScreen1:
+  LD A, %01011111
+  .rept 2
+  LD (HL), A
+  INC L
+  .endm
+  LD A, %01010111
+  .rept 6
+  LD (HL), A
+  INC L
+  .endm
+  DJNZ SetScreen1
+  LD B, 24
+SetScreen2:
+  LD A, %01001111
+  .rept 2
+  LD (HL), A
+  INC L
+  .endm
+  LD A, %01000111
+  .rept 6
+  LD (HL), A
+  INC L
+  .endm
+  DJNZ SetScreen2
+  INC H
+  DEC D
+  JR NZ, SetScreen0
+
   JP MainLoop		; The rest of the code is in non-contended RAM
 
 ; #############################################################################
@@ -493,10 +527,6 @@ Wait3:
   LD ($5320), A
   LD A, %00111000
   LD ($5720), A
-
-  LD A, $47
-  LD ($5a00), A
-  LD ($5a20), A
 
   JP MainLoop
 
