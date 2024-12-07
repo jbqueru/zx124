@@ -357,6 +357,14 @@ MainLoop:
   AND 31
 ;  LD (HL), A
 
+  LD HL, sprite_x
+  LD A, (HL)
+  DEC A
+  JP P, SpriteNoWrap
+  LD A, 30
+SpriteNoWrap:
+  LD (HL), A
+
 ; ######################################
 ; ##                                  ##
 ; ## Draw the top third of the screen ##
@@ -504,7 +512,7 @@ Wait3:
 
   LD HL, SpriteWilly + 16
   LD DE, $5000
-  LD A, 30
+  LD A, (sprite_x)
   ADD E
   LD E, A
   LD A, 6
@@ -1338,4 +1346,7 @@ vbars_x:
 	.ds	1
 
 text_x:
+	.ds	1
+
+sprite_x:
 	.ds	1
