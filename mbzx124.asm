@@ -391,11 +391,16 @@ Wait1:
   INC HL
   LD B, (HL)
 
-; Write the computed address 8 times on the stack
-  .rept 6
-  PUSH DE
-  .endm
+  LD HL, TextNextPage
 
+; Write the computed address 8 times on the stack
+  PUSH DE
+  PUSH DE
+  PUSH DE
+  PUSH DE
+  PUSH HL
+  PUSH DE
+  PUSH DE
   PUSH BC
   PUSH BC
 
@@ -659,6 +664,9 @@ TextVBar01:
   LDI
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -679,6 +687,9 @@ TextVBar12:
   LDI
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -701,6 +712,9 @@ TextVBar23:
   LDI
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -723,6 +737,9 @@ TextVBar34:
   LDI
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -745,6 +762,9 @@ TextVBar45:
   LDI
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -765,6 +785,9 @@ TextVBar56:
   .endm
   LDI
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -784,6 +807,9 @@ TextVBar67:
   INC E
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -806,6 +832,9 @@ TextVBar70:
   INC L
   INC E
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ########################################
@@ -841,6 +870,9 @@ TextHVBar01:
   INC E
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -870,6 +902,9 @@ TextHVBar12:
   INC E
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -901,6 +936,9 @@ TextHVBar23:
   INC E
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -932,6 +970,9 @@ TextHVBar34:
   INC E
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -963,6 +1004,9 @@ TextHVBar45:
   INC E
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -992,6 +1036,9 @@ TextHVBar56:
   INC L
   INC E
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -1016,6 +1063,9 @@ TextHVBar67:
   INC E
   .endm
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
 
 ; ****************************************
@@ -1043,7 +1093,21 @@ TextHVBar70:
   INC L
   INC E
   .endm
+  LD A, L
+  ADD 32
+  LD L, A
   RET
+
+; ##########################
+; ##                      ##
+; ## Mid-text page switch ##
+; ##                      ##
+; ##########################
+
+TextNextPage:
+  INC H
+  RET
+
 
   DrawTextList:
   .dw TextVBar01, TextHVBar01
@@ -1108,21 +1172,21 @@ IrqVbl:
 ; #############################################################################
 ; #############################################################################
 
-  .org $ef00
+  .org $ee00
 Logo:
-  .rept 8
+  .rept 16
   .db $20, $20, $00, $00, $00, $20, $20, $00
   .endm
-  .rept 4
+  .rept 8
   .db $20, $20, $20, $00, $20, $20, $20, $00
   .endm
-  .rept 4
+  .rept 8
   .db $20, $20, $20, $20, $20, $20, $20, $00
   .endm
-  .rept 4
+  .rept 8
   .db $20, $20, $00, $20, $00, $20, $20, $00
   .endm
-  .rept 12
+  .rept 24
   .db $20, $20, $00, $00, $00, $20, $20, $00
   .endm
 
